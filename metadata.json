@@ -48,7 +48,7 @@
       "helpText": "GCS bucket name for failed records (without gs:// prefix)",
       "isOptional": false,
       "regexes": [
-        "^[a-z0-9][a-z0-9-_]{1,61}[a-z0-9]$"
+        "^[a-z0-9][a-z0-9_-]{1,61}[a-z0-9]$"
       ],
       "paramType": "TEXT"
     },

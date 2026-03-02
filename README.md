@@ -1,383 +1,555 @@
-# Production-Ready XML to BigQuery Dataflow Pipeline
+# WoS XML → BigQuery Dataflow Pipeline
 
-A fully automated, production-ready Google Cloud Dataflow pipeline for processing Web of Science (WoS) XML data into BigQuery. This pipeline replaces the legacy multi-stage transformation (XML → SQL → CSV → BigQuery) with a direct, scalable, and maintainable solution.
+[![Tests](https://github.com/ArtemEsper/XML_BQ_pipeline/actions/workflows/test.yml/badge.svg)](https://github.com/ArtemEsper/XML_BQ_pipeline/actions/workflows/test.yml)
+[![Build & Deploy](https://github.com/ArtemEsper/XML_BQ_pipeline/actions/workflows/deploy.yml/badge.svg)](https://github.com/ArtemEsper/XML_BQ_pipeline/actions/workflows/deploy.yml)
+
+A production-ready Google Cloud Dataflow pipeline that processes Web of Science (WoS) XML files directly from GCS into 46 normalized BigQuery tables. Replaces a legacy multi-stage ETL (XML → SQL → CSV → BigQuery) with a single, scalable, config-driven pipeline.
 
 ## Overview
 
-**What it does:**
-- Processes large XML files (for a sample 778MB+, 22K+ records) directly from Google Cloud Storage
-- Transforms hierarchical XML into 46 normalized BigQuery tables
-- Includes Dead Letter Queue (DLQ) for failed records
-- Provides comprehensive monitoring and logging
-- Fully automated infrastructure deployment with Terraform
-
-**Key Features:**
-- ✅ **Production-Ready**: Error handling, DLQ, monitoring, and logging
-- ✅ **Scalable**: Auto-scaling Dataflow workers, processes 778MB in < 30 minutes
-- ✅ **Cost-Effective**: ~$2.50 per file, or $101/month with preemptible workers
-- ✅ **Reusable**: Configuration-driven, works with any XML schema
-- ✅ **Infrastructure as Code**: Complete Terraform automation
-- ✅ **Data Quality**: Schema validation before BigQuery writes
+- Reads XML files (778 MB+, 22 K+ records per file) directly from Google Cloud Storage
+- Parses hierarchical XML into 46 normalized BigQuery tables using a config-driven mapping
+- Failed records go to a Dead Letter Queue (DLQ) in GCS as enriched JSON lines
+- Fully automated CI/CD: every push to `main` that touches pipeline code rebuilds the Docker image, pushes to Artifact Registry, and updates the Flex Template spec
 
 ## Architecture
 
 ```
-GCS Input Bucket (*.xml)
-    ↓
-[Dataflow Pipeline]
-    ├─ Split XML → Individual <REC> elements
-    ├─ Parse Records (48 table rows per record)
-    ├─ Validate Schemas
-    ├─ Error → DLQ (GCS)
-    └─ Success → BigQuery (48 tables, parallel writes)
-    ↓
-BigQuery Dataset (46 normalized tables)
-
-DLQ: gs://project-wos-dlq/failed_records/{timestamp}.jsonl
+Developer pushes to main
+        │
+        ▼
+┌─────────────────────────────────────────────────────┐
+│               GitHub Actions CI/CD                  │
+│  test.yml         → unit tests (pytest)             │
+│  deploy.yml       → docker build + push → AR        │
+│                   → flex-template build → GCS       │
+└─────────────────────────────────────────────────────┘
+        │
+        ▼ template spec updated in GCS
+        │
+gcloud dataflow flex-template run  (manual trigger)
+        │
+        ▼
+┌─────────────────────────────────────────────────────┐
+│              Dataflow Pipeline                      │
+│  MatchFiles  →  SplitXMLRecords  →  ParseXMLRecord  │
+│                        │                   │        │
+│                        ▼                   ▼        │
+│                   DLQ (GCS)      WriteToBigQuery    │
+│                                  (46 tables, ///)   │
+└─────────────────────────────────────────────────────┘
+        │                   │
+        ▼                   ▼
+gs://…-wos-dlq/     BigQuery dataset
+failed_records/     wos_dev (46 tables)
 ```
-
-## Quick Start
-
-### Prerequisites
-
-- Google Cloud Project with billing enabled
-- Python 3.11+
-- Terraform 1.0+
-- `gcloud` CLI authenticated
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd XML_BQ_pipeline
-   ```
-
-2. **Generate BigQuery schemas:**
-   ```bash
-   python src/wos_beam_pipeline/utils/schema_generator.py \
-     parser/wos_schema_final.sql \
-     config/schemas
-   ```
-
-3. **Deploy infrastructure with Terraform:**
-   ```bash
-   cd terraform
-   cp terraform.tfvars.example terraform.tfvars
-   # Edit terraform.tfvars with your project details
-
-   terraform init
-   terraform plan
-   terraform apply
-   ```
-
-   This creates:
-   - 3 GCS buckets (input, DLQ, temp)
-   - BigQuery dataset with 46 tables
-   - Service account with appropriate permissions
-   - Uploads config and schema files to GCS
-
-4. **Upload XML data:**
-   ```bash
-   gsutil cp data/WR_2024_*.xml gs://<your-project>-wos-input-dev/data/
-   ```
-
-5. **Run the pipeline locally (DirectRunner):**
-   ```bash
-   # Create virtual environment
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   pip install -r requirements.txt
-
-   # Run pipeline
-   python src/wos_beam_pipeline/main.py \
-     --input_pattern=gs://<bucket>/data/*.xml \
-     --config_path=gs://<bucket>/config/wos_config.xml \
-     --schema_path=gs://<bucket>/config/all_schemas.json \
-     --bq_dataset=<project>:wos_dev \
-     --dlq_bucket=<project>-wos-dlq-dev \
-     --runner=DirectRunner
-   ```
-
-6. **Run on Dataflow (production):**
-   ```bash
-   python src/wos_beam_pipeline/main.py \
-     --input_pattern=gs://<bucket>/data/*.xml \
-     --config_path=gs://<bucket>/config/wos_config.xml \
-     --schema_path=gs://<bucket>/config/all_schemas.json \
-     --bq_dataset=<project>:wos_dev \
-     --dlq_bucket=<project>-wos-dlq-dev \
-     --runner=DataflowRunner \
-     --project=<your-project-id> \
-     --region=us-central1 \
-     --temp_location=gs://<temp-bucket>/temp \
-     --service_account_email=<sa-email> \
-     --max_num_workers=50 \
-     --machine_type=n2-standard-4
-   ```
 
 ## Project Structure
 
 ```
 XML_BQ_pipeline/
+├── .github/
+│   └── workflows/
+│       ├── test.yml          # Unit tests on every push / PR
+│       └── deploy.yml        # Docker build + push + Flex Template rebuild
+├── scripts/
+│   └── setup_wif.sh          # One-time GCP Workload Identity Federation setup
 ├── src/
 │   └── wos_beam_pipeline/
-│       ├── main.py                  # Main pipeline orchestrator
-│       ├── models/                  # Refactored Table/TableList classes
-│       │   ├── column.py
-│       │   ├── table.py
-│       │   └── table_list.py
-│       ├── transforms/              # Beam DoFn implementations
-│       │   ├── xml_splitter.py      # Split XML into records
-│       │   ├── xml_parser.py        # Parse records to rows
-│       │   ├── schema_validator.py  # Validate against BQ schema
-│       │   └── dlq_handler.py       # DLQ enrichment
-│       └── utils/                   # Utilities
-│           ├── config_parser.py     # Parse wos_config.xml
-│           └── schema_generator.py  # SQL → BigQuery schema converter
-├── terraform/                       # Infrastructure as Code
-│   ├── main.tf                      # Main orchestrator
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── modules/
-│       ├── gcs_buckets/             # Storage buckets
-│       ├── bigquery/                # Dataset and tables
-│       └── iam/                     # Service accounts
-├── config/
-│   └── schemas/                     # Generated BigQuery schemas
+│       ├── main.py           # Pipeline entry point (argparse + beam.Pipeline)
+│       ├── models/           # Table, Column, TableList data classes
+│       ├── transforms/       # Beam DoFns: xml_splitter, xml_parser, dlq_handler
+│       └── utils/            # config_parser, schema_generator
+├── terraform/                # GCP infrastructure (buckets, BQ dataset, IAM)
+├── config/schemas/           # 46 auto-generated BigQuery JSON schemas
 ├── parser/
-│   ├── wos_config.xml               # XML → Table mapping
-│   └── wos_schema_final.sql         # PostgreSQL schema (source)
-├── tests/                           # Unit, integration, E2E tests
-├── Dockerfile                       # Flex Template image
-├── metadata.json                    # Flex Template metadata
-├── requirements.txt                 # Python dependencies
-└── setup.py                         # Package setup
-
+│   ├── wos_config.xml        # XML → table mapping (the "schema" for the parser)
+│   └── wos_schema_final.sql  # PostgreSQL source schema (used to generate BQ schemas)
+├── tests/                    # unit/, integration/, e2e/
+├── Dockerfile                # Dataflow Flex Template image
+├── launcher.py               # Flex Template entry point (avoids relative-import issues)
+├── metadata.json             # Flex Template parameter definitions
+├── requirements.txt
+└── setup.py
 ```
 
-## Configuration
+## Prerequisites
 
-### WoS Config File (`parser/wos_config.xml`)
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Python | 3.11+ | Local development and DirectRunner |
+| `gcloud` CLI | latest | Deploy infrastructure and launch jobs |
+| Terraform | 1.0+ | Provision GCP resources |
+| Docker | latest | Build the Flex Template image locally |
+| `gh` CLI | latest | Manage GitHub secrets (CI/CD setup only) |
 
-Defines the mapping from XML structure to database tables. Example:
+You also need a GCP project with billing enabled and `gcloud auth application-default login` completed.
 
-```xml
-<static>
-  <summary table="wos_summary:wos_summary">
-    <pub_info>
-      <pubyear table_name:column_name>wos_summary:pubyear</pubyear>
-      <vol>wos_summary:vol</vol>
-    </pub_info>
-  </summary>
-</static>
+---
+
+## Initial Setup (one-time)
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/ArtemEsper/XML_BQ_pipeline.git
+cd XML_BQ_pipeline
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && pip install -e .
 ```
 
-### Schema Files
+### 2. Generate BigQuery schemas
 
-Generated from PostgreSQL schema:
+The BQ schemas are derived from the PostgreSQL source schema:
+
 ```bash
 python src/wos_beam_pipeline/utils/schema_generator.py \
   parser/wos_schema_final.sql \
   config/schemas
 ```
 
-Creates:
-- `config/schemas/*_schema.json` - Individual table schemas
-- `config/schemas/all_schemas.json` - Combined schemas for Terraform
+This creates `config/schemas/all_schemas.json` (consumed by Terraform and the pipeline).
+
+### 3. Deploy GCP infrastructure with Terraform
+
+```bash
+cd terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars — set project_id, environment, dataset_owner_email
+terraform init
+terraform plan
+terraform apply
+```
+
+Terraform provisions:
+- **GCS buckets**: `<project>-wos-input-<env>`, `<project>-wos-dlq-<env>`, `<project>-dataflow-temp-<env>`
+- **BigQuery dataset**: `wos_<env>` with 46 tables
+- **Service account**: `wos-dataflow-sa-<env>@...` with appropriate IAM roles
+- Uploads `wos_config.xml` and `all_schemas.json` to the input bucket
+
+After `terraform apply`, retrieve the exact run commands:
+
+```bash
+terraform output dataflow_run_command
+terraform output -json  # all bucket/dataset names
+```
+
+### 4. Upload XML data
+
+```bash
+gsutil -m cp data/*.xml gs://<project>-wos-input-<env>/data/
+```
+
+---
+
+## Running the Pipeline
+
+There are three ways to run the pipeline, suited to different contexts.
+
+### Method 1 — DirectRunner (local development)
+
+Runs on your machine using all available cores. Good for smoke-testing logic on a small XML sample; not suitable for large files.
+
+```bash
+python -m wos_beam_pipeline.main \
+  --input_pattern='gs://<project>-wos-input-dev/data/sample.xml' \
+  --config_path='gs://<project>-wos-input-dev/config/wos_config.xml' \
+  --schema_path='gs://<project>-wos-input-dev/config/all_schemas.json' \
+  --bq_dataset='<project>:wos_dev' \
+  --dlq_bucket='<project>-wos-dlq-dev' \
+  --namespace='http://clarivate.com/schema/wok5.30/public/FullRecord' \
+  --parent_tag='records' \
+  --runner=DirectRunner
+```
+
+### Method 2 — DataflowRunner (direct Python invocation)
+
+Submits directly to Dataflow without the Flex Template layer. Useful for one-off runs during development when you haven't rebuilt the template yet.
+
+```bash
+python -m wos_beam_pipeline.main \
+  --input_pattern='gs://<project>-wos-input-dev/data/*.xml' \
+  --config_path='gs://<project>-wos-input-dev/config/wos_config.xml' \
+  --schema_path='gs://<project>-wos-input-dev/config/all_schemas.json' \
+  --bq_dataset='<project>:wos_dev' \
+  --dlq_bucket='<project>-wos-dlq-dev' \
+  --namespace='http://clarivate.com/schema/wok5.30/public/FullRecord' \
+  --parent_tag='records' \
+  --runner=DataflowRunner \
+  --project=<project> \
+  --region=us-central1 \
+  --temp_location='gs://<project>-dataflow-temp-dev/temp' \
+  --service_account_email='wos-dataflow-sa-dev@<project>.iam.gserviceaccount.com' \
+  --setup_file="$(pwd)/setup.py" \
+  --max_num_workers=50 \
+  --machine_type=n2-standard-4 \
+  --job_name="wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)"
+```
+
+> **Note**: `--setup_file` is required when using DataflowRunner so Dataflow workers can install the `wos_beam_pipeline` package. The Flex Template method handles this automatically via the Docker image.
+
+### Method 3 — Flex Template via `gcloud` (production, recommended)
+
+This is the **production method**. The Docker image containing the pipeline code is pre-built by CI/CD and stored in Artifact Registry. Launching a job is a single `gcloud` call — no Python or local environment needed.
+
+```bash
+gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
+  --template-file-gcs-location='gs://<project>-dataflow-temp-dev/templates/wos_pipeline.json' \
+  --region=us-central1 \
+  --service-account-email='wos-dataflow-sa-dev@<project>.iam.gserviceaccount.com' \
+  --max-workers=50 \
+  --worker-machine-type=n2-standard-4 \
+  --parameters 'input_pattern=gs://<project>-wos-input-dev/data/*.xml' \
+  --parameters 'config_path=gs://<project>-wos-input-dev/config/wos_config.xml' \
+  --parameters 'schema_path=gs://<project>-wos-input-dev/config/all_schemas.json' \
+  --parameters 'bq_dataset=<project>:wos_dev' \
+  --parameters 'dlq_bucket=<project>-wos-dlq-dev' \
+  --parameters 'namespace=http://clarivate.com/schema/wok5.30/public/FullRecord' \
+  --parameters 'parent_tag=records' \
+  --parameters 'bq_write_disposition=WRITE_APPEND'
+```
+
+> **Shell quoting**: In `zsh`, always single-quote `--parameters` values that contain `*`, `://`, or `:`. Unquoted `*.xml` will be expanded by the shell before being passed to `gcloud`.
+
+**Check job status:**
+
+```bash
+# List recent jobs
+gcloud dataflow jobs list --region=us-central1 --filter="name:wos-xml-to-bq" --limit=5
+
+# Monitor a specific job
+gcloud dataflow jobs describe <JOB_ID> --region=us-central1 --format='value(currentState)'
+
+# Stream logs
+gcloud logging read \
+  'resource.type="dataflow_step" AND resource.labels.job_name~"wos-xml-to-bq"' \
+  --freshness=1h --format='table(timestamp, textPayload)'
+```
+
+#### Pipeline Parameters
+
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `input_pattern` | yes | — | GCS glob for input XML files, e.g. `gs://bucket/data/*.xml` |
+| `config_path` | yes | — | GCS path to `wos_config.xml` |
+| `schema_path` | yes | — | GCS path to `all_schemas.json` |
+| `bq_dataset` | yes | — | BigQuery destination: `project:dataset` or `dataset` |
+| `dlq_bucket` | yes | — | GCS bucket name for failed records (no `gs://` prefix) |
+| `namespace` | no | `""` | XML namespace URI, e.g. `http://clarivate.com/schema/wok5.30/public/FullRecord` |
+| `parent_tag` | no | `records` | XML tag wrapping the record collection (used for config path lookups) |
+| `record_tag` | no | `REC` | XML tag that identifies a single record |
+| `id_tag` | no | `UID` | XML tag containing the unique record identifier |
+| `file_number` | no | `-1` | Integer tracking field injected into `wos_summary` rows |
+| `bq_write_disposition` | no | `WRITE_APPEND` | `WRITE_APPEND`, `WRITE_TRUNCATE`, or `WRITE_EMPTY` |
+
+---
+
+## CI/CD Pipeline
+
+Every push to the `main` branch is handled by two GitHub Actions workflows.
+
+### Workflow: `test.yml` — Unit Tests
+
+**Triggers:** every push to `main` and every pull request targeting `main`.
+
+```
+push / pull_request → main
+        │
+        ▼
+  ubuntu-latest runner
+  Python 3.11
+  pip install -r requirements.txt + pip install -e .
+  pytest tests/unit/ -v --cov=src/wos_beam_pipeline
+        │
+        ▼
+  Coverage report uploaded as artifact
+```
+
+All 15 unit tests cover the config parser, schema generator, and table model.
+
+### Workflow: `deploy.yml` — Build & Deploy
+
+**Triggers:** push to `main` **only when** these paths change:
+
+```
+src/**  |  Dockerfile  |  launcher.py  |  requirements.txt
+setup.py  |  metadata.json  |  .github/workflows/deploy.yml
+```
+
+Changes to tests, docs, Terraform, or other non-pipeline files do **not** trigger a rebuild.
+
+```
+push to main (pipeline files changed)
+        │
+        ▼
+Job 1: Build & Push Docker Image
+  ├─ Authenticate to GCP via Workload Identity Federation
+  ├─ docker/login-action → us-central1-docker.pkg.dev
+  ├─ docker/build-push-action (--platform linux/amd64)
+  │   Tags: :latest  AND  :<git-sha-8>
+  └─ Layer cache via GitHub Actions Cache (gha)
+        │
+        ▼ (on success)
+Job 2: Build Flex Template Spec
+  ├─ Authenticate to GCP via Workload Identity Federation
+  ├─ gcloud dataflow flex-template build
+  │   --image=…:latest  --metadata-file=metadata.json
+  └─ Writes wos_pipeline.json to GCS
+```
+
+The Docker image is always built for `linux/amd64` (required for Dataflow workers), regardless of the developer's local CPU architecture.
+
+### Authentication: Workload Identity Federation
+
+The workflows authenticate to GCP **without any long-lived service account keys**. Instead, GitHub's OIDC token is exchanged for a short-lived GCP access token using Workload Identity Federation.
+
+```
+GitHub Actions runner
+    │  requests OIDC token (id-token: write permission)
+    ▼
+GitHub OIDC Provider (token.actions.githubusercontent.com)
+    │  JWT token scoped to ArtemEsper/XML_BQ_pipeline
+    ▼
+GCP Workload Identity Pool (github-actions-pool)
+    │  validates token, checks repository attribute
+    ▼
+Impersonate github-actions-sa@xml-bq-wos-analytics.iam.gserviceaccount.com
+    │  short-lived OAuth2 access token
+    ▼
+Artifact Registry (push image)  +  GCS (write template spec)
+```
+
+Two **GitHub repository secrets** must be set (already configured):
+
+| Secret | Value |
+|--------|-------|
+| `WIF_PROVIDER` | `projects/<project-number>/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider` |
+| `WIF_SERVICE_ACCOUNT` | `github-actions-sa@<project-id>.iam.gserviceaccount.com` |
+
+### Setting up CI/CD in a new GCP project
+
+If you fork this repo or set up a new environment, run the one-time setup script:
+
+```bash
+# Edit PROJECT_ID, GITHUB_ORG, GITHUB_REPO at the top of the script first
+bash scripts/setup_wif.sh
+```
+
+The script:
+1. Enables `iamcredentials.googleapis.com`
+2. Creates the `github-actions-sa` service account with `artifactregistry.writer` + `storage.objectAdmin`
+3. Creates the Workload Identity Pool and OIDC provider
+4. Binds the SA to the pool, scoped to your repository only
+5. Prints the two secret values to copy into GitHub
+
+Then set the secrets:
+
+```bash
+gh secret set WIF_PROVIDER       --repo <org>/<repo> --body "<provider-resource-name>"
+gh secret set WIF_SERVICE_ACCOUNT --repo <org>/<repo> --body "<sa-email>"
+```
+
+---
+
+## Configuration
+
+### XML Mapping Config (`parser/wos_config.xml`)
+
+This file drives the entire parser. It maps XML node paths to `table:column` destinations:
+
+```xml
+<records>
+  <REC>
+    <static>
+      <summary table="wos_summary:wos_summary">
+        <pub_info>
+          <pubyear>wos_summary:pubyear</pubyear>
+          <vol>wos_summary:vol</vol>
+        </pub_info>
+      </summary>
+    </static>
+  </REC>
+</records>
+```
+
+Config keys are constructed as `parent_tag/record_tag/...` — the default is `records/REC/...`. This must match the structure of your XML files.
+
+### Schema Files
+
+BigQuery schemas are generated once from the PostgreSQL source schema and committed to the repo:
+
+```bash
+python src/wos_beam_pipeline/utils/schema_generator.py \
+  parser/wos_schema_final.sql \
+  config/schemas
+# Outputs: config/schemas/<table>_schema.json + config/schemas/all_schemas.json
+```
+
+`all_schemas.json` is uploaded to GCS by Terraform and referenced at pipeline runtime via `--schema_path`.
+
+---
 
 ## BigQuery Tables
 
-The pipeline creates 46 normalized tables:
+The pipeline writes to 46 normalized tables:
 
-| Table Category | Tables | Purpose |
-|---------------|--------|---------|
-| Core | `wos_summary` | Main record metadata |
-| Authors | `wos_summary_names`, `wos_summary_names_email_addr` | Author information |
-| Affiliations | `wos_addresses`, `wos_address_names`, `wos_address_organizations` | Institutional affiliations |
-| Publication | `wos_titles`, `wos_page`, `wos_publisher` | Publication details |
-| Classification | `wos_subjects`, `wos_headings`, `wos_keywords` | Subject categorization |
-| References | `wos_references` | Cited references |
-| Conference | `wos_conference`, `wos_conf_*` | Conference metadata |
-| Grants | `wos_grants`, `wos_grant_ids` | Funding information |
-| Abstracts | `wos_abstracts`, `wos_abstract_paragraphs` | Abstract text |
-| ...and more | | See schema files for complete list |
+| Category | Key Tables |
+|----------|-----------|
+| Core | `wos_summary` |
+| Authors | `wos_summary_names`, `wos_summary_names_email_addr` |
+| Affiliations | `wos_addresses`, `wos_address_names`, `wos_address_organizations` |
+| Publication | `wos_titles`, `wos_page`, `wos_publisher` |
+| Classification | `wos_subjects`, `wos_headings`, `wos_keywords` |
+| References | `wos_references` |
+| Conference | `wos_conference`, `wos_conf_*` |
+| Grants | `wos_grants`, `wos_grant_ids` |
+| Abstracts | `wos_abstracts`, `wos_abstract_paragraphs` |
+
+Verify row counts after a run:
+
+```sql
+SELECT table_id, row_count
+FROM `<project>.wos_dev.__TABLES__`
+ORDER BY row_count DESC;
+```
+
+---
 
 ## Dead Letter Queue (DLQ)
 
-Failed records are written to GCS with enriched metadata:
+Records that fail parsing are written to GCS as JSON lines with enriched metadata:
 
 ```json
 {
   "record_id": "WOS:001124170700001",
   "xml": "<REC>...</REC>",
-  "error": "KeyError: 'table_path_not_found'",
+  "error": "KeyError: 'records/REC/static/summary'",
   "error_type": "KeyError",
-  "error_hash": "abc123...",
   "pipeline_step": "ParseXMLRecord",
-  "timestamp": "2026-02-27T14:30:00.123Z",
-  "worker_id": "dataflow-worker-xyz"
+  "timestamp": "2026-03-02T19:08:00.000Z"
 }
 ```
 
-**DLQ Location:** `gs://<project>-wos-dlq-<env>/failed_records/*.jsonl`
+**Location:** `gs://<project>-wos-dlq-<env>/failed_records/*.jsonl`
 
-## Monitoring & Logging
+A zero-byte DLQ means all records parsed successfully. Check DLQ size first when debugging:
+
+```bash
+gsutil du -sh gs://<project>-wos-dlq-dev/failed_records/
+```
+
+---
+
+## Monitoring
 
 ### Cloud Logging
 
-View logs in Google Cloud Console:
+```bash
+# All logs for a job
+gcloud logging read \
+  'resource.type="dataflow_step" AND resource.labels.job_name="<job-name>"' \
+  --freshness=2h
+
+# Errors only
+gcloud logging read \
+  'resource.type="dataflow_step" AND severity>=ERROR' \
+  --freshness=2h
 ```
-resource.type="dataflow_step"
-resource.labels.job_name="wos-xml-to-bigquery"
-```
 
-### Key Metrics
+### Dataflow Console
 
-- `records_parsed_total`: Total records processed
-- `records_failed_total`: Records sent to DLQ
-- `parse_duration_seconds`: Per-record parsing time
-- `bigquery_write_duration_seconds`: BigQuery write latency
+Navigate to **Dataflow → Jobs** in the GCP Console to see the pipeline graph, per-step throughput, and worker autoscaling.
 
-### Alerts
+### Diagnostic Patterns
 
-Recommended alerts (set up in Cloud Monitoring):
-- DLQ rate > 5% → Page on-call
-- Pipeline failure → Immediate notification
-- High latency (p99 > 30s) → Warning
+| Symptom | Likely Cause |
+|---------|-------------|
+| Empty DLQ + empty BQ | XML split failed (check namespace / record tag) |
+| Full DLQ + empty BQ | Config key mismatch (check `parent_tag`) |
+| Empty DLQ + empty BQ (after parse fix) | `DoOutputsTuple` access issue in `main.py` |
+| BQ load errors | Schema mismatch — REQUIRED field missing, or extra field not in schema |
 
-## Cost Estimation
-
-**Per 778MB file (22,659 records):**
-- Dataflow compute (10 workers, 1.26 hours): $2.52
-- BigQuery batch load: Free
-- Storage: Negligible
-- **Total: ~$2.50/file**
-
-**Monthly (100 files):** ~$250
-
-**With optimizations:**
-- Preemptible workers: 60% discount → $100/month
-- Right-sized machines: Additional 50% reduction possible
-
-## Performance
-
-**Target:** < 30 minutes for 778MB file (22,659 records)
-
-**Parallelization:**
-- File-level: Each XML file processed by separate workers
-- Record-level: 22,659 records distributed across workers
-- Table-level: 46 BigQuery writes happen concurrently
-
-**Recommended Configuration:**
-- Machine type: `n2-standard-4`
-- Max workers: 50
-- Initial workers: 10
+---
 
 ## Development
 
 ### Running Tests
 
 ```bash
-# Unit tests
+# Unit tests (no GCP needed)
 pytest tests/unit/ -v
 
-# Integration tests
+# Integration tests (require local XML sample)
 pytest tests/integration/ -v
 
-# E2E tests (requires GCP credentials)
-pytest tests/e2e/ -v --slow
+# E2E tests (require live GCP credentials)
+pytest tests/e2e/ -v
 
 # Coverage
-pytest tests/ --cov=src/wos_beam_pipeline --cov-report=html
+pytest tests/unit/ --cov=src/wos_beam_pipeline --cov-report=html
 ```
 
-### Local Development
+### Making Changes
+
+1. Create a branch and open a PR — `test.yml` runs automatically
+2. Merge to `main` — `deploy.yml` rebuilds the Docker image and template spec if pipeline files changed
+3. Launch a new job using **Method 3** above to test the updated template
+
+### Manual Docker Build (local testing)
 
 ```bash
-# Install dev dependencies
-pip install -r requirements.txt -e ".[dev]"
+# Build for the correct platform (amd64, required by Dataflow)
+docker build --platform linux/amd64 -t wos-xml-to-bq:local .
 
-# Run with DirectRunner (local)
-python src/wos_beam_pipeline/main.py \
-  --runner=DirectRunner \
-  # ... other args
+# Test the image entrypoint
+docker run --rm wos-xml-to-bq:local python -c "from wos_beam_pipeline.main import run; print('OK')"
 ```
 
-## Deployment
+---
 
-### Building Flex Template
+## Cost Estimation
 
-```bash
-# Build Docker image
-docker build -t gcr.io/<project>/wos-pipeline:latest .
+**Per 778 MB file (22,659 records, ~12 minutes):**
 
-# Push to Container Registry
-docker push gcr.io/<project>/wos-pipeline:latest
+| Resource | Cost |
+|----------|------|
+| Dataflow compute (10 workers × 1.26 h) | ~$2.50 |
+| BigQuery batch load | Free |
+| GCS storage | Negligible |
+| **Total** | **~$2.50/file** |
 
-# Create Flex Template
-gcloud dataflow flex-template build gs://<bucket>/templates/wos-pipeline.json \
-  --image=gcr.io/<project>/wos-pipeline:latest \
-  --sdk-language=PYTHON \
-  --metadata-file=metadata.json
-```
+**With preemptible workers:** ~60% discount → ~$1/file
 
-### Running Flex Template
+**Monthly (100 files):** ~$100 optimized
 
-```bash
-gcloud dataflow flex-template run wos-pipeline-prod \
-  --template-file-gcs-location=gs://<bucket>/templates/wos-pipeline.json \
-  --region=us-central1 \
-  --parameters input_pattern="gs://<bucket>/data/*.xml" \
-  --parameters config_path="gs://<bucket>/config/wos_config.xml" \
-  --parameters schema_path="gs://<bucket>/config/all_schemas.json" \
-  --parameters bq_dataset="<project>:wos_prod" \
-  --parameters dlq_bucket="<project>-wos-dlq-prod"
-```
+---
 
 ## Troubleshooting
 
-### Common Issues
+**`no matches found: *.xml`**
+Shell glob expansion in zsh. Single-quote all `--parameters` values:
+`--parameters 'input_pattern=gs://bucket/data/*.xml'`
 
-**Issue:** `Schema validation failed`
-- **Cause:** Schema mismatch between generated schemas and actual data
-- **Fix:** Regenerate schemas, check data types in source XML
+**`ImportError: attempted relative import`**
+The Flex Template launcher runs `FLEX_TEMPLATE_PYTHON_PY_FILE` as a plain script.
+`launcher.py` (at repo root) resolves this by using absolute imports after `pip install -e .`.
 
-**Issue:** `Config not found in GCS`
-- **Cause:** Config file not uploaded or incorrect path
-- **Fix:** Verify file uploaded: `gsutil ls gs://<bucket>/config/`
+**`Permission denied` pulling image on Dataflow**
+Grant `roles/artifactregistry.reader` to the Dataflow service account on the `wos-pipeline` Artifact Registry repository.
 
-**Issue:** `BigQuery quota exceeded`
-- **Cause:** Too many concurrent writes
-- **Fix:** Reduce max workers or increase quotas in GCP Console
+**`IAM Service Account Credentials API disabled`**
+Required for Workload Identity Federation token exchange:
+`gcloud services enable iamcredentials.googleapis.com`
 
-**Issue:** `High DLQ rate`
-- **Cause:** Data quality issues or config mismatches
-- **Fix:** Inspect DLQ records, update config or fix source data
+**`Identity Pool does not exist` in WIF IAM binding**
+WIF IAM bindings require the numeric project number, not the project ID string.
+Use `gcloud projects describe <project-id> --format='value(projectNumber)'`.
 
-## Reusability
+**`POSIX regex` error in Flex Template build**
+Dataflow validates `metadata.json` regexes as POSIX ERE. Place `-` at the end of character classes: `[a-z0-9_-]` not `[a-z0-9-_]`.
 
-This pipeline is designed to be reusable for any XML to BigQuery transformation:
-
-1. **Update schema:** Modify `wos_schema_final.sql`
-2. **Update config:** Modify `wos_config.xml` mappings
-3. **Regenerate schemas:** Run `schema_generator.py`
-4. **Redeploy Terraform:** `terraform apply`
-5. **Run pipeline:** Same command, new data!
+---
 
 ## License
 
-MIT License - See LICENSE file for details
-
-## Support
-
-For issues, questions, or contributions:
-- GitHub Issues: <repository-url>/issues
-- Documentation: See `/docs` directory
-- Architecture: See `ARCHITECTURE.md`
-- Deployment: See `DEPLOYMENT.md`
-
-## Acknowledgments
-
-Built on Apache Beam, Google Cloud Dataflow, and lxml.
-Adapted from the original `generic_parser.py` by the WoS data team.
+MIT License — see `LICENSE` for details.

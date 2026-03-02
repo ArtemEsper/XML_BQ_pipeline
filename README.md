@@ -5,7 +5,7 @@ A fully automated, production-ready Google Cloud Dataflow pipeline for processin
 ## Overview
 
 **What it does:**
-- Processes large XML files (778MB+, 22K+ records) directly from Google Cloud Storage
+- Processes large XML files (for a sample 778MB+, 22K+ records) directly from Google Cloud Storage
 - Transforms hierarchical XML into 46 normalized BigQuery tables
 - Includes Dead Letter Queue (DLQ) for failed records
 - Provides comprehensive monitoring and logging

@@ -23,8 +23,9 @@ COPY parser/wos_config.xml /template/config/
 # Copy metadata
 COPY metadata.json /template/
 
-# Copy setup.py for package installation
+# Copy setup.py and README for package installation
 COPY setup.py /template/
+COPY README.md /template/
 
 # Install the package
 RUN pip install -e .

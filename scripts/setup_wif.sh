@@ -16,6 +16,11 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------------------
+# Enable required APIs
+# ---------------------------------------------------------------------------
+gcloud services enable iamcredentials.googleapis.com --project="${PROJECT_ID:-xml-bq-wos-analytics}"
+
+# ---------------------------------------------------------------------------
 # Configuration — edit these if your setup differs
 # ---------------------------------------------------------------------------
 PROJECT_ID="xml-bq-wos-analytics"

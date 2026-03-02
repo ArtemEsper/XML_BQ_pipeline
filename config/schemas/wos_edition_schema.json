@@ -1,0 +1,20 @@
+[
+  {
+    "name": "id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": ""
+  },
+  {
+    "name": "edition_ctr",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": ""
+  },
+  {
+    "name": "edition",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": ""
+  }
+]

@@ -1,0 +1,102 @@
+{
+  "name": "WoS XML to BigQuery Pipeline",
+  "description": "Production-ready Dataflow pipeline for processing Web of Science XML data into BigQuery",
+  "parameters": [
+    {
+      "name": "input_pattern",
+      "label": "Input XML File Pattern",
+      "helpText": "GCS pattern for input XML files (e.g., gs://bucket/path/*.xml)",
+      "isOptional": false,
+      "regexes": [
+        "^gs://[^\\n\\r]+$"
+      ],
+      "paramType": "TEXT"
+    },
+    {
+      "name": "config_path",
+      "label": "Configuration File Path",
+      "helpText": "GCS path to wos_config.xml configuration file",
+      "isOptional": false,
+      "regexes": [
+        "^gs://[^\\n\\r]+\\.xml$"
+      ],
+      "paramType": "TEXT"
+    },
+    {
+      "name": "schema_path",
+      "label": "Schema File Path",
+      "helpText": "GCS path to all_schemas.json file",
+      "isOptional": false,
+      "regexes": [
+        "^gs://[^\\n\\r]+\\.json$"
+      ],
+      "paramType": "TEXT"
+    },
+    {
+      "name": "bq_dataset",
+      "label": "BigQuery Dataset",
+      "helpText": "Target BigQuery dataset (format: project:dataset or dataset)",
+      "isOptional": false,
+      "regexes": [
+        "^[a-zA-Z0-9_:-]+$"
+      ],
+      "paramType": "TEXT"
+    },
+    {
+      "name": "dlq_bucket",
+      "label": "Dead Letter Queue Bucket",
+      "helpText": "GCS bucket name for failed records (without gs:// prefix)",
+      "isOptional": false,
+      "regexes": [
+        "^[a-z0-9][a-z0-9-_]{1,61}[a-z0-9]$"
+      ],
+      "paramType": "TEXT"
+    },
+    {
+      "name": "record_tag",
+      "label": "XML Record Tag",
+      "helpText": "XML tag name that defines a single record",
+      "isOptional": true,
+      "regexes": [
+        "^[a-zA-Z_][a-zA-Z0-9_]*$"
+      ],
+      "paramType": "TEXT",
+      "defaultValue": "REC"
+    },
+    {
+      "name": "id_tag",
+      "label": "XML ID Tag",
+      "helpText": "XML tag name containing the unique identifier",
+      "isOptional": true,
+      "regexes": [
+        "^[a-zA-Z_][a-zA-Z0-9_]*$"
+      ],
+      "paramType": "TEXT",
+      "defaultValue": "UID"
+    },
+    {
+      "name": "namespace",
+      "label": "XML Namespace",
+      "helpText": "XML namespace URI (leave empty if no namespace)",
+      "isOptional": true,
+      "paramType": "TEXT",
+      "defaultValue": ""
+    },
+    {
+      "name": "file_number",
+      "label": "File Number",
+      "helpText": "Optional file number for tracking",
+      "isOptional": true,
+      "paramType": "TEXT",
+      "defaultValue": "-1"
+    },
+    {
+      "name": "bq_write_disposition",
+      "label": "BigQuery Write Disposition",
+      "helpText": "How to handle existing data in BigQuery tables",
+      "isOptional": true,
+      "paramType": "TEXT",
+      "defaultValue": "WRITE_APPEND"
+    }
+  ]
+}

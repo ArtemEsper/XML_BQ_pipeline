@@ -1,0 +1,14 @@
+# Apache Beam and Google Cloud dependencies
+apache-beam[gcp]==2.53.0
+google-cloud-storage==2.14.0
+google-cloud-bigquery==3.14.1
+
+# XML processing
+lxml==5.1.0
+
+# Utilities
+python-dateutil==2.8.2
+
+# For local development/testing
+pytest==7.4.3
+pytest-cov==4.1.0

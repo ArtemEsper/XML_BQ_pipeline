@@ -1,0 +1,20 @@
+[
+  {
+    "name": "id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": ""
+  },
+  {
+    "name": "language_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": ""
+  },
+  {
+    "name": "language",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": ""
+  }
+]

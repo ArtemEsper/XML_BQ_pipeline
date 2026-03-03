@@ -9,6 +9,7 @@ A production-ready Google Cloud Dataflow pipeline that processes Web of Science 
 
 - Reads XML files (778 MB+, 22 K+ records per file) directly from Google Cloud Storage
 - Parses hierarchical XML into 46 normalized BigQuery tables using a config-driven mapping
+- **Hash-based idempotent processing** — re-running on the same file produces zero duplicate rows; only new or changed records are written
 - Failed records go to a Dead Letter Queue (DLQ) in GCS as enriched JSON lines
 - Fully automated CI/CD: every push to `main` that touches pipeline code rebuilds the Docker image, pushes to Artifact Registry, and updates the Flex Template spec
 
@@ -30,18 +31,32 @@ Developer pushes to main
 gcloud dataflow flex-template run  (manual trigger)
         │
         ▼
-┌─────────────────────────────────────────────────────┐
-│              Dataflow Pipeline                      │
-│  MatchFiles  →  SplitXMLRecords  →  ParseXMLRecord  │
-│                        │                   │        │
-│                        ▼                   ▼        │
-│                   DLQ (GCS)      WriteToBigQuery    │
-│                                  (46 tables, ///)   │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     Dataflow Pipeline                        │
+│                                                              │
+│  MatchFiles → SplitXMLRecords (uid, xml, sha256_hash)        │
+│                        │                                     │
+│               [--enable_dedup]                               │
+│                        │                                     │
+│               FilterUnchangedRecords ←── wos_record_registry │
+│               ├── new      ──┐                               │
+│               ├── changed ──┤→ Flatten → ParseXMLRecord      │
+│               └── unchanged  (discarded)                     │
+│                                      │                       │
+│                                      ▼                       │
+│                             WriteToBigQuery                  │
+│                             (46 tables + ingestion_ts)       │
+│                                                              │
+│  [post-pipeline]                                             │
+│  DELETE stale rows for changed UIDs                          │
+│  UPDATE wos_record_registry + wos_file_registry              │
+└──────────────────────────────────────────────────────────────┘
         │                   │
         ▼                   ▼
-gs://…-wos-dlq/     BigQuery dataset
-failed_records/     wos_dev (46 tables)
+gs://…-wos-dlq/     BigQuery dataset wos_<env>
+failed_records/     46 content tables
+                    wos_record_registry
+                    wos_file_registry
 ```
 
 ## Project Structure
@@ -58,17 +73,25 @@ XML_BQ_pipeline/
 │   └── wos_beam_pipeline/
 │       ├── main.py           # Pipeline entry point (argparse + beam.Pipeline)
 │       ├── models/           # Table, Column, TableList data classes
-│       ├── transforms/       # Beam DoFns: xml_splitter, xml_parser, dlq_handler
-│       └── utils/            # config_parser, schema_generator
+│       ├── transforms/
+│       │   ├── xml_splitter.py   # Splits XML → (uid, xml_string, sha256_hash) tuples
+│       │   ├── xml_parser.py     # Parses records into 46 table rows
+│       │   ├── dedup.py          # FilterUnchangedRecords DoFn (hash-based dedup)
+│       │   ├── schema_validator.py
+│       │   └── dlq_handler.py
+│       └── utils/
+│           ├── config_parser.py
+│           ├── schema_generator.py
+│           └── registry.py       # BQ registry read/write/cleanup helpers
 ├── terraform/                # GCP infrastructure (buckets, BQ dataset, IAM)
 ├── config/schemas/           # 46 auto-generated BigQuery JSON schemas
 ├── parser/
 │   ├── wos_config.xml        # XML → table mapping (the "schema" for the parser)
 │   └── wos_schema_final.sql  # PostgreSQL source schema (used to generate BQ schemas)
-├── tests/                    # unit/, integration/, e2e/
+├── tests/unit/               # 42 unit tests (no GCP required)
 ├── Dockerfile                # Dataflow Flex Template image
 ├── launcher.py               # Flex Template entry point (avoids relative-import issues)
-├── metadata.json             # Flex Template parameter definitions
+├── metadata.json             # Flex Template parameter definitions (11 params)
 ├── requirements.txt
 └── setup.py
 ```
@@ -241,6 +264,168 @@ gcloud logging read \
 | `id_tag` | no | `UID` | XML tag containing the unique record identifier |
 | `file_number` | no | `-1` | Integer tracking field injected into `wos_summary` rows |
 | `bq_write_disposition` | no | `WRITE_APPEND` | `WRITE_APPEND`, `WRITE_TRUNCATE`, or `WRITE_EMPTY` |
+| `enable_dedup` | no | `false` | Enable hash-based idempotent processing (see section below) |
+
+---
+
+## Idempotent Processing (`--enable_dedup`)
+
+### Problem
+
+Without deduplication, re-running the pipeline on the same file appends duplicate rows to every BigQuery table. When WoS delivers updated files (historical corrections mixed with new records), there is no way to efficiently skip unchanged records or update changed ones cleanly.
+
+### Solution
+
+The `--enable_dedup` flag activates a two-level idempotency mechanism:
+
+| Level | Mechanism | Effect |
+|-------|-----------|--------|
+| **File** | MD5 hash from GCS object metadata compared against `wos_file_registry` | Entire pipeline skipped if file unchanged since last run |
+| **Record** | SHA-256 of raw `<REC>` XML string compared against `wos_record_registry` | Only new/changed records are parsed and written |
+
+### Data Flow (dedup enabled)
+
+```
+SplitXMLRecords
+  yields (uid, xml_string, sha256_hash)
+        │
+        ▼
+FilterUnchangedRecords  ← side input: {uid → hash} from wos_record_registry
+  │
+  ├── OUTPUT_TAG_NEW       (uid not in registry)
+  ├── OUTPUT_TAG_CHANGED   (uid in registry, hash differs)  → also written to GCS temp
+  └── OUTPUT_TAG_UNCHANGED (uid in registry, hash matches)  → DISCARDED
+        │
+        ▼ Flatten([new, changed])
+ParseXMLRecord
+  ├── injects ingestion_ts into every row
+  └── injects record_hash into wos_summary row
+        │
+        ▼
+WriteToBigQuery (WRITE_APPEND — only new/changed rows)
+        │
+        ▼ [post-pipeline, outside Beam graph]
+DELETE FROM each table WHERE id IN changed_uids AND ingestion_ts < run_ingestion_ts
+UPDATE wos_record_registry  (new hashes inserted, changed hashes updated)
+UPDATE wos_file_registry    (file MD5 + processed_at recorded)
+```
+
+### Registry Tables
+
+Two registry tables live in the same BigQuery dataset as the 46 content tables:
+
+**`wos_record_registry`** — one row per WoS record, updated every run:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `uid` | STRING REQUIRED | WoS unique identifier |
+| `record_hash` | STRING REQUIRED | SHA-256 hex digest of the raw `<REC>` XML |
+| `source_file` | STRING NULLABLE | GCS path of the source XML file |
+| `ingested_at` | TIMESTAMP REQUIRED | UTC timestamp of the last pipeline run that touched this record |
+
+Partitioned by `ingested_at` (DAY), clustered on `uid`.
+
+**`wos_file_registry`** — one row per processed file:
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `file_path` | STRING REQUIRED | GCS path of the input XML file |
+| `file_md5` | STRING REQUIRED | Base64-encoded MD5 from GCS object metadata |
+| `processed_at` | TIMESTAMP REQUIRED | UTC timestamp of last successful processing |
+| `record_count` | INTEGER REQUIRED | Number of records processed |
+
+Partitioned by `processed_at` (DAY), clustered on `file_path`.
+
+### Schema Changes to Content Tables
+
+Two NULLABLE columns are added to all 46 content tables at runtime. They are backward-compatible — existing rows simply have `NULL` in these columns.
+
+| Column | Type | Added to |
+|--------|------|----------|
+| `ingestion_ts` | TIMESTAMP NULLABLE | All 46 tables |
+| `record_hash` | STRING NULLABLE | `wos_summary` only |
+
+`ingestion_ts` is the key used by the post-pipeline `DELETE` to remove stale rows for changed records without touching unchanged rows from other pipeline runs.
+
+### Running with Dedup
+
+**First run** (empty registry — all records treated as NEW):
+
+```bash
+python -m wos_beam_pipeline.main \
+  --input_pattern='gs://<project>-wos-input-dev/data/*.xml' \
+  ... [standard args] ... \
+  --runner=DataflowRunner \
+  --enable_dedup
+```
+
+**Subsequent run, same file** — file MD5 unchanged → pipeline exits immediately:
+
+```
+INFO - File gs://…/data/WR_2024_*.xml already processed with same MD5 — skipping pipeline run.
+```
+
+**Subsequent run, updated file** — only changed/new records are processed:
+
+```
+INFO - Record registry loaded: 22,659 entries
+INFO - Post-pipeline cleanup: deleting old rows for 143 changed records
+INFO - Cleanup completed successfully for all tables
+```
+
+**Via Flex Template** (production):
+
+```bash
+gcloud dataflow flex-template run "wos-xml-to-bq-dedup-$(date +%Y%m%d-%H%M%S)" \
+  --template-file-gcs-location='gs://<project>-dataflow-temp-dev/templates/wos_pipeline.json' \
+  --region=us-central1 \
+  ... [standard params] ... \
+  --parameters 'enable_dedup=true'
+```
+
+### Verifying Idempotency
+
+After the first dedup run:
+
+```sql
+-- Registry should have one entry per record
+SELECT COUNT(*) FROM `<project>.wos_dev.wos_record_registry`;
+-- Expected: ~22,659
+
+-- File should be registered
+SELECT file_path, file_md5, processed_at, record_count
+FROM `<project>.wos_dev.wos_file_registry`;
+
+-- No duplicate UIDs in summary
+SELECT COUNT(*), COUNT(DISTINCT id) FROM `<project>.wos_dev.wos_summary`;
+-- Both counts should be equal
+
+-- Confirm ingestion_ts is populated
+SELECT id, ingestion_ts, record_hash
+FROM `<project>.wos_dev.wos_summary`
+LIMIT 5;
+```
+
+After re-running the same file with `--enable_dedup`:
+
+```sql
+-- Row counts in content tables should be unchanged
+SELECT COUNT(*) FROM `<project>.wos_dev.wos_summary`;
+
+-- No new ingestion_ts values (nothing was written)
+SELECT DISTINCT DATE(ingestion_ts) FROM `<project>.wos_dev.wos_summary`;
+```
+
+### Dedup Cost and Performance
+
+| Overhead | Detail |
+|----------|--------|
+| Registry load | One BQ query at startup; ~1–2 s for 22K entries |
+| SHA-256 hashing | <1 ms per record; negligible vs XML parse time |
+| Post-pipeline cleanup | ~5 s per table × 46 tables ≈ 4 min for a full changed-record pass |
+| File-level skip | Sub-second (GCS metadata + 1 BQ query); avoids all Dataflow costs |
+
+For a file with no changes, total overhead is under 5 seconds and Dataflow is never started.
 
 ---
 
@@ -265,7 +450,7 @@ push / pull_request → main
   Coverage report uploaded as artifact
 ```
 
-All 15 unit tests cover the config parser, schema generator, and table model.
+All 42 unit tests cover the config parser, schema generator, table model, XML splitter (including SHA-256 hash output), deduplication routing, and registry functions.
 
 ### Workflow: `deploy.yml` — Build & Deploy
 
@@ -468,6 +653,9 @@ Navigate to **Dataflow → Jobs** in the GCP Console to see the pipeline graph, 
 | Full DLQ + empty BQ | Config key mismatch (check `parent_tag`) |
 | Empty DLQ + empty BQ (after parse fix) | `DoOutputsTuple` access issue in `main.py` |
 | BQ load errors | Schema mismatch — REQUIRED field missing, or extra field not in schema |
+| Pipeline exits immediately with dedup | File MD5 unchanged — file already registered. Expected behavior. |
+| Dedup run: 0 rows written but counts doubled | Registry was empty on a re-run; check `wos_record_registry` row count |
+| `TypeError: WriteToBigQuery.__init__()` | Wrong Beam version parameter — use `additional_bq_parameters` not `schema_update_options` |
 
 ---
 

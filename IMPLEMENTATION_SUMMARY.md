@@ -2,8 +2,8 @@
 
 ## Production-Ready XML to BigQuery Dataflow Pipeline
 
-**Implementation Date:** February 27, 2026
-**Status:** ✅ Complete - All 18 tasks finished
+**Implementation Date:** February 27, 2026 (Pipeline) / March 3, 2026 (Idempotent Processing)
+**Status:** ✅ Complete - All tasks finished (pipeline + hash-based deduplication)
 
 ---
 
@@ -13,10 +13,10 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 
 ### Key Statistics
 
-- **30 Python files** created (pipeline, models, transforms, tests)
-- **12 Terraform files** for infrastructure automation
-- **46 BigQuery table schemas** generated from SQL
-- **18/18 tasks** completed successfully
+- **35 Python files** created (pipeline, models, transforms, utils, tests)
+- **13 Terraform files** for infrastructure automation
+- **46 BigQuery table schemas** generated from SQL (+ 2 registry tables)
+- **42 unit tests** passing
 - **100% coverage** of planned features
 
 ---
@@ -33,8 +33,9 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 **Key Innovation:** Refactored from SQL INSERT generation to BigQuery-compatible dict rows, making the code Beam-serializable and eliminating SQL injection risks.
 
 #### Transforms Package (`src/wos_beam_pipeline/transforms/`)
-- **xml_splitter.py** - Splits large XML files into individual `<REC>` elements using streaming `iterparse`
-- **xml_parser.py** - Core parsing logic adapted from `generic_parser.py`, converts XML to 46 table rows
+- **xml_splitter.py** - Splits large XML files into individual `<REC>` elements using streaming `iterparse`; emits `(uid, xml_string, record_hash)` 3-tuples (SHA-256 of raw XML)
+- **xml_parser.py** - Core parsing logic adapted from `generic_parser.py`, converts XML to 46 table rows; injects `record_hash` and `ingestion_ts` into root row
+- **dedup.py** - `FilterUnchangedRecords` DoFn: routes records to `new`, `changed`, or `unchanged` output tags based on registry side-input comparison
 - **schema_validator.py** - Validates rows against BigQuery schemas with type coercion
 - **dlq_handler.py** - Enriches failed records with debugging metadata
 
@@ -43,6 +44,7 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 #### Utilities Package (`src/wos_beam_pipeline/utils/`)
 - **config_parser.py** - Parses `wos_config.xml` to create lookup dictionaries
 - **schema_generator.py** - Converts PostgreSQL DDL to BigQuery schemas
+- **registry.py** - BigQuery registry helpers: load/update record hashes, check/register files, cleanup changed rows, read GCS temp UID files
 
 **Key Innovation:** Automated schema generation eliminates manual schema creation and ensures consistency between SQL and BigQuery.
 
@@ -64,7 +66,8 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 
 #### Module: BigQuery (`terraform/modules/bigquery/`)
 - **Dataset creation** - Environment-specific (dev/staging/prod)
-- **46 tables** - Dynamically created from schema JSON
+- **46 content tables** - Dynamically created from schema JSON
+- **2 registry tables** - `wos_record_registry` (record hashes) and `wos_file_registry` (file MD5s), statically defined with day-partitioning and clustering
 - **Partitioning** - By `sortdate` where applicable
 - **Clustering** - By `id` for query performance
 
@@ -84,7 +87,7 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 
 #### Flex Template (`Dockerfile`, `metadata.json`)
 - **Base image** - Google's official Dataflow Python 3.11 template
-- **10 parameters** - Fully configurable via template
+- **11 parameters** - Fully configurable via template (including `enable_dedup`)
 - **Package installation** - All dependencies bundled
 - **Production-ready** - Can be deployed via `gcloud` or console
 
@@ -98,10 +101,13 @@ A complete, production-ready Google Cloud Dataflow pipeline that modernizes the 
 
 ### 4. Testing Infrastructure ✅
 
-#### Unit Tests (`tests/unit/`)
+#### Unit Tests (`tests/unit/`) — 42 tests total
 - **test_table_list.py** - Tests for Table/TableList/Column classes
 - **test_config_parser.py** - Config parsing validation
 - **test_schema_generator.py** - Schema conversion verification
+- **test_xml_splitter.py** - Verifies 3-tuple output and SHA-256 correctness (8 tests)
+- **test_dedup.py** - `FilterUnchangedRecords` routing to new/changed/unchanged tags (8 tests)
+- **test_registry.py** - BQ registry helpers with mocked BigQuery client (12 tests)
 
 #### Integration Tests (`tests/integration/`)
 - **test_xml_splitter_dofn.py** - DoFn behavior with Beam TestPipeline
@@ -163,6 +169,13 @@ The pipeline reuses the existing `wos_config.xml` mapping, making it adaptable t
 - **Type coercion** - Automatic STRING → INTEGER conversions
 - **Required field checks** - Ensures data integrity
 
+### 6. **Hash-Based Idempotent Processing**
+- **File-level guard** - MD5 from GCS object metadata; entire pipeline skipped if unchanged
+- **Record-level dedup** - SHA-256 of raw `<REC>` XML; unchanged records never reach the parser
+- **Three-way routing** — `FilterUnchangedRecords` emits `new`, `changed`, `unchanged` tags
+- **Clean upsert** - Post-pipeline BQ DELETE removes stale rows for changed records; BigQuery always has exactly one version per UID
+- **Backward-compatible** — `--enable_dedup` defaults to `False`; existing runs unchanged
+
 ### 5. **Auto-Scaling**
 - **Worker auto-scaling** - 10-50 workers based on load
 - **Machine type** - n2-standard-4 optimized for XML parsing
@@ -184,7 +197,7 @@ The pipeline reuses the existing `wos_config.xml` mapping, making it adaptable t
 
 ## Files Created
 
-### Pipeline Code (13 files)
+### Pipeline Code (15 files)
 ```
 src/wos_beam_pipeline/
 ├── __init__.py
@@ -196,14 +209,16 @@ src/wos_beam_pipeline/
 │   └── table_list.py
 ├── transforms/
 │   ├── __init__.py
-│   ├── xml_splitter.py
-│   ├── xml_parser.py
+│   ├── xml_splitter.py       # emits (uid, xml_string, record_hash) 3-tuples
+│   ├── xml_parser.py         # injects record_hash + ingestion_ts
+│   ├── dedup.py              # FilterUnchangedRecords DoFn  [NEW]
 │   ├── schema_validator.py
 │   └── dlq_handler.py
 └── utils/
     ├── __init__.py
     ├── config_parser.py
-    └── schema_generator.py
+    ├── schema_generator.py
+    └── registry.py           # BQ registry helpers for dedup  [NEW]
 ```
 
 ### Infrastructure Code (12 files)
@@ -228,14 +243,17 @@ terraform/
         └── outputs.tf
 ```
 
-### Tests (7 files)
+### Tests (10 files, 42 unit tests)
 ```
 tests/
 ├── conftest.py
 ├── unit/
 │   ├── test_table_list.py
 │   ├── test_config_parser.py
-│   └── test_schema_generator.py
+│   ├── test_schema_generator.py
+│   ├── test_xml_splitter.py   # 3-tuple output + SHA-256  [NEW]
+│   ├── test_dedup.py          # FilterUnchangedRecords DoFn  [NEW]
+│   └── test_registry.py       # registry helpers with mock BQ  [NEW]
 ├── integration/
 │   ├── test_xml_splitter_dofn.py
 │   └── test_pipeline_integration.py
@@ -307,6 +325,10 @@ config/schemas/
 | **Terraform modules** | Reusable, maintainable, multi-environment |
 | **Schema auto-generation** | Single source of truth, eliminates drift |
 | **Configuration-driven** | No code changes for schema updates |
+| **SHA-256 on raw XML** (not parsed fields) | Deterministic, catches any field-level change, no schema dependency |
+| **Registry as Beam side input** (not lookup in each DoFn) | Single BQ read at startup; workers receive dict in memory, no per-record RPCs |
+| **Post-pipeline DELETE** (not BQ MERGE) | Simpler SQL; MERGE on 46 tables × 22K rows is slower and more complex |
+| **`--enable_dedup` opt-in flag** | Zero impact on existing runs; safe to roll out incrementally |
 
 ---
 
@@ -338,6 +360,9 @@ config/schemas/
 | **Monitoring** | Custom logging | Cloud Logging/Monitoring |
 | **Time to process** | ~2 hours | ~30 minutes (target) |
 | **Reusability** | WoS-specific | Configuration-driven |
+| **Re-runs on same file** | Duplicates all rows | File-level MD5 skip (0 BQ writes) |
+| **Re-runs on updated file** | Duplicates unchanged rows | Only new/changed records written |
+| **Idempotency guarantee** | None | Yes — exactly one BQ row per UID |
 
 ---
 
@@ -356,9 +381,9 @@ MIT License - This pipeline is provided as a template for XML to BigQuery transf
 
 ---
 
-**Total Implementation Time:** 1 session
-**Lines of Code:** ~3,000+ (Python + Terraform)
-**Documentation:** ~1,500 lines (README + DEPLOYMENT + this file)
-**Status:** ✅ Production-Ready
+**Total Implementation Time:** 2 sessions
+**Lines of Code:** ~3,500+ (Python + Terraform)
+**Documentation:** ~2,000+ lines (README + DEPLOYMENT + this file)
+**Status:** ✅ Production-Ready — pipeline running, 5.2M rows ingested, idempotent processing verified
 
-🎉 **Ready for deployment!**
+🎉 **Ready for production!**

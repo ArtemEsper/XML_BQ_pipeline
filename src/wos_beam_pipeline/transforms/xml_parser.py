@@ -39,7 +39,8 @@ class ParseXMLRecord(beam.DoFn):
         record_tag: str,
         namespace: str = '',
         file_number: int = -1,
-        parent_tag: str = ''
+        parent_tag: str = '',
+        ingestion_ts: str = ''
     ):
         """Initialize the XML parser.
 
@@ -51,28 +52,30 @@ class ParseXMLRecord(beam.DoFn):
             parent_tag: XML tag wrapping the record collection (e.g., 'records').
                         Used to build config lookup paths, matching the original
                         generic_parser.py -p option (default: '')
+            ingestion_ts: ISO-format UTC timestamp injected into all rows (default: '')
         """
         self.config = config
         self.record_tag = record_tag
         self.namespace = namespace
         self.file_number = file_number
         self.parent_tag = parent_tag
+        self.ingestion_ts = ingestion_ts
 
     def process(
         self,
-        element: Tuple[str, str],
+        element: Tuple[str, str, str],
         *args,
         **kwargs
     ) -> Iterator[pvalue.TaggedOutput]:
         """Process a single XML record.
 
         Args:
-            element: Tuple of (record_id, xml_string)
+            element: Tuple of (record_id, xml_string, record_hash)
 
         Yields:
             TaggedOutput objects with table rows or DLQ records
         """
-        record_id, xml_string = element
+        record_id, xml_string, record_hash = element
 
         try:
             # Parse XML string
@@ -111,6 +114,12 @@ class ParseXMLRecord(beam.DoFn):
             # Set the primary key (use the record_id we already extracted)
             id_value = record_id
             table_list.add_identifier(core_table_name, 'id', id_value)
+
+            # Inject pipeline-level fields into the core (root) table row
+            if record_hash:
+                table_list.add_col(core_table_name, 'record_hash', record_hash)
+            if self.ingestion_ts:
+                table_list.add_col(core_table_name, 'ingestion_ts', self.ingestion_ts)
 
             # Handle file number if configured
             file_number_path = f"{path}/file_number"

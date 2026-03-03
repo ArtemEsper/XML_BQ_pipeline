@@ -7,6 +7,7 @@ for parallel processing by downstream transforms.
 import apache_beam as beam
 import lxml.etree as etree
 from typing import Iterator, Tuple
+import hashlib
 import logging
 from google.cloud import storage
 import io
@@ -37,14 +38,14 @@ class SplitXMLRecords(beam.DoFn):
         self.id_tag = id_tag
         self.namespace = namespace
 
-    def process(self, gcs_path: str) -> Iterator[Tuple[str, str]]:
+    def process(self, gcs_path: str) -> Iterator[Tuple[str, str, str]]:
         """Process a GCS XML file and yield individual records.
 
         Args:
             gcs_path: GCS path to XML file (gs://bucket/path/to/file.xml)
 
         Yields:
-            Tuples of (record_id, xml_string)
+            Tuples of (record_id, xml_string, record_hash)
         """
         logger.info(f"Splitting XML file: {gcs_path}")
 
@@ -79,8 +80,13 @@ class SplitXMLRecords(beam.DoFn):
                     method='xml'
                 )
 
-                # Yield the record
-                yield (record_id, xml_string)
+                # Compute SHA-256 hash for idempotent deduplication
+                record_hash = hashlib.sha256(
+                    xml_string.encode('utf-8')
+                ).hexdigest()
+
+                # Yield the record as a 3-tuple
+                yield (record_id, xml_string, record_hash)
 
                 record_count += 1
 

@@ -97,6 +97,14 @@
       "isOptional": true,
       "paramType": "TEXT",
       "defaultValue": "WRITE_APPEND"
+    },
+    {
+      "name": "enable_dedup",
+      "label": "Enable Deduplication",
+      "helpText": "Enable hash-based idempotent processing (requires wos_record_registry in BQ). Set to 'true' to activate.",
+      "isOptional": true,
+      "paramType": "TEXT",
+      "defaultValue": "false"
     }
   ]
 }

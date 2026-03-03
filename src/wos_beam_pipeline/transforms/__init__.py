@@ -7,6 +7,7 @@ from .xml_splitter import SplitXMLRecords, ReadXMLFiles
 from .xml_parser import ParseXMLRecord
 from .schema_validator import ValidateSchema
 from .dlq_handler import EnrichDLQRecord, WriteDLQToGCS, FormatDLQAsJSON
+from .dedup import FilterUnchangedRecords
 
 __all__ = [
     'SplitXMLRecords',
@@ -16,4 +17,5 @@ __all__ = [
     'EnrichDLQRecord',
     'WriteDLQToGCS',
     'FormatDLQAsJSON',
+    'FilterUnchangedRecords',
 ]

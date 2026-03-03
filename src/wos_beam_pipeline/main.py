@@ -355,7 +355,10 @@ def run(argv=None):
                     )
                 )
 
-            # Write to BigQuery
+            # Write to BigQuery.
+            # ALLOW_FIELD_ADDITION lets BQ evolve existing table schemas when
+            # new NULLABLE columns (e.g. ingestion_ts, record_hash) are present
+            # in the data but not yet in the table definition.
             _ = (
                 table_rows
                 | f'WriteToBigQuery_{table_name}' >> WriteToBigQuery(
@@ -366,6 +369,7 @@ def run(argv=None):
                         known_args.bq_write_disposition
                     ),
                     create_disposition=BigQueryDisposition.CREATE_IF_NEEDED,
+                    schema_update_options=['ALLOW_FIELD_ADDITION'],
                     custom_gcs_temp_location=f"gs://{known_args.dlq_bucket}/temp"
                 )
             )

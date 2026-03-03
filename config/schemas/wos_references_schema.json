@@ -76,5 +76,11 @@
     "type": "STRING",
     "mode": "NULLABLE",
     "description": ""
+  },
+  {
+    "name": "occurenceorder",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Ordinal position of this in-text citation occurrence (1 = first mention in body text)"
   }
 ]

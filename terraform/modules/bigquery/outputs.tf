@@ -21,11 +21,21 @@ output "full_dataset_id" {
 }
 
 output "table_ids" {
-  description = "List of all table IDs"
+  description = "List of all WoS content table IDs"
   value       = [for table in google_bigquery_table.wos_tables : table.table_id]
 }
 
 output "table_count" {
-  description = "Number of tables created"
+  description = "Number of WoS content tables created"
   value       = length(google_bigquery_table.wos_tables)
+}
+
+output "record_registry_table_id" {
+  description = "Table ID of wos_record_registry"
+  value       = google_bigquery_table.wos_record_registry.table_id
+}
+
+output "file_registry_table_id" {
+  description = "Table ID of wos_file_registry"
+  value       = google_bigquery_table.wos_file_registry.table_id
 }

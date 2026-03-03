@@ -356,9 +356,15 @@ def run(argv=None):
                 )
 
             # Write to BigQuery.
-            # ALLOW_FIELD_ADDITION lets BQ evolve existing table schemas when
-            # new NULLABLE columns (e.g. ingestion_ts, record_hash) are present
-            # in the data but not yet in the table definition.
+            # ALLOW_FIELD_ADDITION is only valid with WRITE_APPEND (or
+            # WRITE_TRUNCATE on a partitioned table). With WRITE_TRUNCATE on
+            # non-partitioned tables BQ recreates the table from the provided
+            # schema, so no schema update option is needed or allowed.
+            bq_extra_params = (
+                {'schemaUpdateOptions': ['ALLOW_FIELD_ADDITION']}
+                if known_args.bq_write_disposition == 'WRITE_APPEND'
+                else {}
+            )
             _ = (
                 table_rows
                 | f'WriteToBigQuery_{table_name}' >> WriteToBigQuery(
@@ -369,7 +375,7 @@ def run(argv=None):
                         known_args.bq_write_disposition
                     ),
                     create_disposition=BigQueryDisposition.CREATE_IF_NEEDED,
-                    additional_bq_parameters={'schemaUpdateOptions': ['ALLOW_FIELD_ADDITION']},
+                    additional_bq_parameters=bq_extra_params,
                     custom_gcs_temp_location=f"gs://{known_args.dlq_bucket}/temp"
                 )
             )

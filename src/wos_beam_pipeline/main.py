@@ -369,7 +369,7 @@ def run(argv=None):
                         known_args.bq_write_disposition
                     ),
                     create_disposition=BigQueryDisposition.CREATE_IF_NEEDED,
-                    schema_update_options=['ALLOW_FIELD_ADDITION'],
+                    additional_bq_parameters={'schemaUpdateOptions': ['ALLOW_FIELD_ADDITION']},
                     custom_gcs_temp_location=f"gs://{known_args.dlq_bucket}/temp"
                 )
             )

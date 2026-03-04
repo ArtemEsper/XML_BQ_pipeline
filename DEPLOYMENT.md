@@ -227,34 +227,41 @@ echo "https://console.cloud.google.com/dataflow/jobs/${REGION}?project=${PROJECT
 
 ### 6.2 Build and Deploy Flex Template (Advanced)
 
+If you've updated the pipeline code or `wos_config.xml`, you need to push a new Docker image and update the Flex Template spec in GCS.
+
 ```bash
-# Build Docker image
-docker build -t gcr.io/${PROJECT_ID}/wos-pipeline:latest .
+# Variables
+PROJECT_ID="xml-bq-wos-analytics"
+REGION="us-central1"
+REPOSITORY="wos-pipeline"
+IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/wos-pipeline:latest"
 
-# Push to Container Registry
-docker push gcr.io/${PROJECT_ID}/wos-pipeline:latest
+# 1. Authenticate Docker for Artifact Registry
+gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
 
-# Create template bucket if needed
-TEMPLATE_BUCKET="${PROJECT_ID}-dataflow-templates"
-gsutil mb -l ${REGION} gs://${TEMPLATE_BUCKET} || true
+# 2. Build and push the image
+docker build -t "${IMAGE_TAG}" .
+docker push "${IMAGE_TAG}"
 
-# Build Flex Template
-gcloud dataflow flex-template build \
-  gs://${TEMPLATE_BUCKET}/wos-pipeline.json \
-  --image=gcr.io/${PROJECT_ID}/wos-pipeline:latest \
-  --sdk-language=PYTHON \
-  --metadata-file=metadata.json
+# 3. Re-build the Flex Template specification in GCS
+TEMPLATE_BUCKET=$(cd terraform && terraform output -raw temp_bucket_name && cd ..)
+gcloud dataflow flex-template build "gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
+  --image="${IMAGE_TAG}" \
+  --sdk-language="PYTHON" \
+  --metadata-file="metadata.json"
 
-# Run Flex Template
-gcloud dataflow flex-template run wos-pipeline-${ENVIRONMENT} \
-  --template-file-gcs-location=gs://${TEMPLATE_BUCKET}/wos-pipeline.json \
-  --region=${REGION} \
-  --service-account-email=${SA_EMAIL} \
-  --parameters input_pattern="gs://${INPUT_BUCKET}/data/*.xml" \
-  --parameters config_path="${CONFIG_PATH}" \
-  --parameters schema_path="${SCHEMA_PATH}" \
-  --parameters bq_dataset="${BQ_DATASET}" \
-  --parameters dlq_bucket="${DLQ_BUCKET}"
+# 4. Run the updated template
+gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
+  --template-file-gcs-location="gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
+  --region="${REGION}" \
+  --service-account-email=$(cd terraform && terraform output -raw dataflow_service_account_email && cd ..) \
+  --parameters "input_pattern=gs://$(cd terraform && terraform output -raw input_bucket_name && cd ..)/data/*.xml" \
+  --parameters "config_path=$(cd terraform && terraform output -raw config_file_gcs_path && cd ..)" \
+  --parameters "schema_path=$(cd terraform && terraform output -raw schema_file_gcs_path && cd ..)" \
+  --parameters "bq_dataset=$(cd terraform && terraform output -raw bigquery_full_dataset_id && cd ..)" \
+  --parameters "dlq_bucket=$(cd terraform && terraform output -raw dlq_bucket_name && cd ..)" \
+  --parameters "namespace=http://clarivate.com/schema/wok5.30/public/FullRecord" \
+  --parameters "parent_tag=records"
 ```
 
 ## Step 6b: Running with Idempotent Processing (`--enable_dedup`)
@@ -325,18 +332,34 @@ python -m wos_beam_pipeline.main \
   --enable_dedup
 ```
 
-**Flex Template:**
-```bash
-gcloud dataflow flex-template run wos-pipeline-dedup \
-  --template-file-gcs-location=gs://${TEMPLATE_BUCKET}/wos-pipeline.json \
-  --region=${REGION} \
-  --service-account-email=${SA_EMAIL} \
-  --parameters input_pattern="gs://${INPUT_BUCKET}/data/*.xml" \
-  --parameters config_path="${CONFIG_PATH}" \
-  --parameters schema_path="${SCHEMA_PATH}" \
-  --parameters bq_dataset="${BQ_DATASET}" \
-  --parameters dlq_bucket="${DLQ_BUCKET}" \
-  --parameters enable_dedup="true"
+# Variables (adjust to your project)
+PROJECT_ID="xml-bq-wos-analytics"
+REGION="us-central1"
+REPOSITORY="wos-pipeline"
+IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/wos-pipeline:latest"
+TEMPLATE_BUCKET="${PROJECT_ID}-dataflow-temp-dev"
+
+# To update the template after code or config changes:
+# 1. Authenticate Docker: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+# 2. Build and push image: docker build -t "${IMAGE_TAG}" . && docker push "${IMAGE_TAG}"
+# 3. Update template spec: gcloud dataflow flex-template build "gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" --image="${IMAGE_TAG}" --sdk-language="PYTHON" --metadata-file="metadata.json"
+
+# Run the job:
+gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
+  --template-file-gcs-location="gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
+  --region="${REGION}" \
+  --service-account-email="wos-dataflow-sa-dev@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --max-workers=50 \
+  --worker-machine-type=n2-standard-4 \
+  --parameters "input_pattern=gs://${PROJECT_ID}-wos-input-dev/data/*.xml" \
+  --parameters "config_path=gs://${PROJECT_ID}-wos-input-dev/config/wos_config.xml" \
+  --parameters "schema_path=gs://${PROJECT_ID}-wos-input-dev/config/all_schemas.json" \
+  --parameters "bq_dataset=${PROJECT_ID}:wos_dev" \
+  --parameters "dlq_bucket=${PROJECT_ID}-wos-dlq-dev" \
+  --parameters "namespace=http://clarivate.com/schema/wok5.30/public/FullRecord" \
+  --parameters "parent_tag=records" \
+  --parameters "bq_write_disposition=WRITE_APPEND" \
+  --parameters "enable_dedup=true"
 ```
 
 ### 6b.2 Subsequent Runs (idempotent behaviour)

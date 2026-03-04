@@ -216,20 +216,33 @@ python -m wos_beam_pipeline.main \
 This is the **production method**. The Docker image containing the pipeline code is pre-built by CI/CD and stored in Artifact Registry. Launching a job is a single `gcloud` call — no Python or local environment needed.
 
 ```bash
+# Variables (adjust to your project)
+PROJECT_ID="xml-bq-wos-analytics"
+REGION="us-central1"
+REPOSITORY="wos-pipeline"
+IMAGE_TAG="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/wos-pipeline:latest"
+TEMPLATE_BUCKET="${PROJECT_ID}-dataflow-temp-dev"
+
+# To update the template after code or config changes:
+# 1. Authenticate Docker: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+# 2. Build and push image: docker build -t "${IMAGE_TAG}" . && docker push "${IMAGE_TAG}"
+# 3. Update template spec: gcloud dataflow flex-template build "gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" --image="${IMAGE_TAG}" --sdk-language="PYTHON" --metadata-file="metadata.json"
+
+# Run the job:
 gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
-  --template-file-gcs-location='gs://<project>-dataflow-temp-dev/templates/wos_pipeline.json' \
-  --region=us-central1 \
-  --service-account-email='wos-dataflow-sa-dev@<project>.iam.gserviceaccount.com' \
+  --template-file-gcs-location="gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
+  --region="${REGION}" \
+  --service-account-email="wos-dataflow-sa-dev@${PROJECT_ID}.iam.gserviceaccount.com" \
   --max-workers=50 \
   --worker-machine-type=n2-standard-4 \
-  --parameters 'input_pattern=gs://<project>-wos-input-dev/data/*.xml' \
-  --parameters 'config_path=gs://<project>-wos-input-dev/config/wos_config.xml' \
-  --parameters 'schema_path=gs://<project>-wos-input-dev/config/all_schemas.json' \
-  --parameters 'bq_dataset=<project>:wos_dev' \
-  --parameters 'dlq_bucket=<project>-wos-dlq-dev' \
-  --parameters 'namespace=http://clarivate.com/schema/wok5.30/public/FullRecord' \
-  --parameters 'parent_tag=records' \
-  --parameters 'bq_write_disposition=WRITE_APPEND'
+  --parameters "input_pattern=gs://${PROJECT_ID}-wos-input-dev/data/*.xml" \
+  --parameters "config_path=gs://${PROJECT_ID}-wos-input-dev/config/wos_config.xml" \
+  --parameters "schema_path=gs://${PROJECT_ID}-wos-input-dev/config/all_schemas.json" \
+  --parameters "bq_dataset=${PROJECT_ID}:wos_dev" \
+  --parameters "dlq_bucket=${PROJECT_ID}-wos-dlq-dev" \
+  --parameters "namespace=http://clarivate.com/schema/wok5.30/public/FullRecord" \
+  --parameters "parent_tag=records" \
+  --parameters "bq_write_disposition=WRITE_APPEND"
 ```
 
 > **Shell quoting**: In `zsh`, always single-quote `--parameters` values that contain `*`, `://`, or `:`. Unquoted `*.xml` will be expanded by the shell before being passed to `gcloud`.

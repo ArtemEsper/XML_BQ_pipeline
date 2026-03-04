@@ -83,6 +83,14 @@
       "defaultValue": ""
     },
     {
+      "name": "parent_tag",
+      "label": "XML Parent Tag",
+      "helpText": "XML tag wrapping the record collection, used for config path lookups",
+      "isOptional": true,
+      "paramType": "TEXT",
+      "defaultValue": "records"
+    },
+    {
       "name": "file_number",
       "label": "File Number",
       "helpText": "Optional file number for tracking",

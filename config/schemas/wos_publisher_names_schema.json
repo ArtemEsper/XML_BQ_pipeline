@@ -141,6 +141,6 @@
     "name": "unified_name",
     "type": "STRING",
     "mode": "NULLABLE",
-    "description": "Standardized form of a publisher's name"
+    "description": ""
   }
 ]

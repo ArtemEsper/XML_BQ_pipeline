@@ -106,7 +106,8 @@ CREATE TABLE public.wos_summary (
 	book_pages character varying,
 	book_notes_count character varying,
 	chapterlist_count character varying,
-	contributor_count character varying
+	contributor_count character varying,
+	r_id_disclaimer character varying
 );
 
 COMMENT ON TABLE public.wos_summary IS 'Summary Record Data';
@@ -239,7 +240,8 @@ CREATE TABLE public.wos_summary_names (
 	middle_name character varying,
 	initials character varying,
 	last_name character varying,
-	suffix character varying
+	suffix character varying,
+	claim_status character varying
 );
 
 COMMENT ON TABLE public.wos_summary_names IS 'Name Data from Record Summary';
@@ -265,6 +267,7 @@ COMMENT ON COLUMN public.wos_summary_names.middle_name IS 'Middle name';
 COMMENT ON COLUMN public.wos_summary_names.initials IS 'Initials';
 COMMENT ON COLUMN public.wos_summary_names.last_name IS 'Last name (surname)';
 COMMENT ON COLUMN public.wos_summary_names.suffix IS 'Name suffix';
+COMMENT ON COLUMN public.wos_summary_names.claim_status IS 'Indicates if author profile is claimed';
 
 REVOKE ALL ON TABLE public.wos_summary_names FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_summary_names FROM postgres;
@@ -601,11 +604,12 @@ CREATE TABLE public.wos_publisher_names (
         first_name character varying,
         middle_name character varying,
         initials character varying,
-        last_name character varying,
-        suffix character varying
-);
+       	last_name character varying,
+       	suffix character varying,
+       	unified_name character varying
+       );
 
-COMMENT ON TABLE public.wos_publisher_names IS 'Name Data from Publishers';
+       COMMENT ON TABLE public.wos_publisher_names IS 'Name Data from Publishers';
 COMMENT ON COLUMN public.wos_publisher_names.id IS 'Record ID (internal primary key)';
 COMMENT ON COLUMN public.wos_publisher_names.publisher_id IS 'Sequence number of associated publisher';
 COMMENT ON COLUMN public.wos_publisher_names.name_id IS 'Sequence number of name in list';
@@ -628,6 +632,7 @@ COMMENT ON COLUMN public.wos_publisher_names.middle_name IS 'Middle name';
 COMMENT ON COLUMN public.wos_publisher_names.initials IS 'Initials';
 COMMENT ON COLUMN public.wos_publisher_names.last_name IS 'Last name (surname)';
 COMMENT ON COLUMN public.wos_publisher_names.suffix IS 'Name suffix';
+COMMENT ON COLUMN public.wos_publisher_names.unified_name IS 'Standardized form of a publisher''s name';
 
 REVOKE ALL ON TABLE public.wos_publisher_names FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_publisher_names FROM postgres;
@@ -775,7 +780,8 @@ CREATE TABLE public.wos_address_names (
         middle_name character varying,
         initials character varying,
         last_name character varying,
-        suffix character varying
+        suffix character varying,
+        claim_status character varying
 );
 
 COMMENT ON TABLE public.wos_address_names IS 'Name Data from Addresses';
@@ -801,6 +807,7 @@ COMMENT ON COLUMN public.wos_address_names.middle_name IS 'Middle name';
 COMMENT ON COLUMN public.wos_address_names.initials IS 'Initials';
 COMMENT ON COLUMN public.wos_address_names.last_name IS 'Last name (surname)';
 COMMENT ON COLUMN public.wos_address_names.suffix IS 'Name suffix';
+COMMENT ON COLUMN public.wos_address_names.claim_status IS 'Indicates if author profile is claimed';
 
 REVOKE ALL ON TABLE public.wos_address_names FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_address_names FROM postgres;
@@ -851,7 +858,8 @@ CREATE TABLE public.wos_address_organizations (
         addr_id integer NOT NULL,
         org_id integer NOT NULL,
         organization character varying,
-        lang_id character varying
+        lang_id character varying,
+        pref character varying
 );
 
 COMMENT ON TABLE public.wos_address_organizations IS 'Organizations Data from Addresses';
@@ -859,6 +867,7 @@ COMMENT ON COLUMN public.wos_address_organizations.id IS 'Record ID (internal pr
 COMMENT ON COLUMN public.wos_address_organizations.addr_id IS 'Sequence number of associated address';
 COMMENT ON COLUMN public.wos_address_organizations.organization IS 'Organization';
 COMMENT ON COLUMN public.wos_address_organizations.lang_id IS 'Language of organization data';
+COMMENT ON COLUMN public.wos_address_organizations.pref IS 'Indicates if organization is preferred (Y) or division (D)';
 
 REVOKE ALL ON TABLE public.wos_address_organizations FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_address_organizations FROM postgres;
@@ -1167,7 +1176,8 @@ CREATE TABLE public.wos_reprint_address_names (
         middle_name character varying,
         initials character varying,
         last_name character varying,
-        suffix character varying
+        suffix character varying,
+        claim_status character varying
 );
 
 COMMENT ON TABLE public.wos_reprint_address_names IS 'Name Data from Reprint Addresses';
@@ -1193,6 +1203,7 @@ COMMENT ON COLUMN public.wos_reprint_address_names.middle_name IS 'Middle name';
 COMMENT ON COLUMN public.wos_reprint_address_names.initials IS 'Initials';
 COMMENT ON COLUMN public.wos_reprint_address_names.last_name IS 'Last name (surname)';
 COMMENT ON COLUMN public.wos_reprint_address_names.suffix IS 'Name suffix';
+COMMENT ON COLUMN public.wos_reprint_address_names.claim_status IS 'Indicates if author profile is claimed';
 
 REVOKE ALL ON TABLE public.wos_reprint_address_names FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_reprint_address_names FROM postgres;
@@ -1243,7 +1254,8 @@ CREATE TABLE public.wos_reprint_address_organizations (
         addr_id integer NOT NULL,
         org_id integer NOT NULL,
         organization character varying,
-        lang_id character varying
+        lang_id character varying,
+        pref character varying
 );
 
 COMMENT ON TABLE public.wos_reprint_address_organizations IS 'Organizations Data from Reprint Addresses';
@@ -1251,6 +1263,7 @@ COMMENT ON COLUMN public.wos_reprint_address_organizations.id IS 'Record ID (int
 COMMENT ON COLUMN public.wos_reprint_address_organizations.addr_id IS 'Sequence number of associated address';
 COMMENT ON COLUMN public.wos_reprint_address_organizations.organization IS 'Organization';
 COMMENT ON COLUMN public.wos_reprint_address_organizations.lang_id IS 'Language of organization data';
+COMMENT ON COLUMN public.wos_reprint_address_organizations.pref IS 'Indicates if organization is preferred (Y) or division (D)';
 
 REVOKE ALL ON TABLE public.wos_reprint_address_organizations FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_reprint_address_organizations FROM postgres;
@@ -1377,7 +1390,8 @@ CREATE TABLE public.wos_contributors (
         middle_name character varying,
         initials character varying,
         last_name character varying,
-        suffix character varying
+        suffix character varying,
+        claim_status character varying
 );
 
 COMMENT ON TABLE public.wos_contributors IS 'Contributors';
@@ -1403,6 +1417,7 @@ COMMENT ON COLUMN public.wos_contributors.middle_name IS 'Middle name';
 COMMENT ON COLUMN public.wos_contributors.initials IS 'Initials';
 COMMENT ON COLUMN public.wos_contributors.last_name IS 'Last name (surname)';
 COMMENT ON COLUMN public.wos_contributors.suffix IS 'Name suffix';
+COMMENT ON COLUMN public.wos_contributors.claim_status IS 'Indicates if author profile is claimed';
 
 REVOKE ALL ON TABLE public.wos_contributors FROM PUBLIC;
 REVOKE ALL ON TABLE public.wos_contributors FROM postgres;

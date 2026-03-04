@@ -69,7 +69,7 @@ environment         = "dev"
 dataset_owner_email = "your-email@example.com"
 
 # Paths (relative to terraform directory)
-config_file_path = "../parser/wos_config.xml"
+config_file_path = "../parser/wos_config_n.xml"
 schema_file_path = "../config/schemas/all_schemas.json"
 
 # Safety settings for dev

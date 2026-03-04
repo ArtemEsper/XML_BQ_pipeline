@@ -347,6 +347,12 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
+    },
+    {
+      "name": "r_id_disclaimer",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
     }
   ],
   "wos_page": [
@@ -560,6 +566,12 @@
     },
     {
       "name": "suffix",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
+    },
+    {
+      "name": "claim_status",
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
@@ -1315,6 +1327,12 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
+    },
+    {
+      "name": "unified_name",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
     }
   ],
   "wos_edition": [
@@ -1415,12 +1433,6 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
-    },
-    {
-      "name": "occurenceorder",
-      "type": "INTEGER",
-      "mode": "NULLABLE",
-      "description": "Ordinal position of this in-text citation occurrence (1 = first mention in body text)"
     }
   ],
   "wos_addresses": [
@@ -1743,6 +1755,12 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
+    },
+    {
+      "name": "claim_status",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
     }
   ],
   "wos_address_names_email_addr": [
@@ -1848,6 +1866,12 @@
     },
     {
       "name": "lang_id",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
+    },
+    {
+      "name": "pref",
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
@@ -2537,6 +2561,12 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
+    },
+    {
+      "name": "claim_status",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
     }
   ],
   "wos_reprint_address_names_email_addr": [
@@ -2642,6 +2672,12 @@
     },
     {
       "name": "lang_id",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": ""
+    },
+    {
+      "name": "pref",
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
@@ -2951,44 +2987,12 @@
       "type": "STRING",
       "mode": "NULLABLE",
       "description": ""
-    }
-  ],
-  "wos_reference_section": [
-    {
-      "name": "id",
-      "type": "STRING",
-      "mode": "REQUIRED",
-      "description": "WoS record UID of the focal paper"
     },
     {
-      "name": "ref_ctr",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "Join key to wos_references.ref_ctr (identifies the specific reference occurrence)"
-    },
-    {
-      "name": "ref_ctrphs",
-      "type": "INTEGER",
-      "mode": "REQUIRED",
-      "description": "Physical-section counter (increments per physicalSection child under each reference)"
-    },
-    {
-      "name": "physicalLocation",
+      "name": "claim_status",
       "type": "STRING",
       "mode": "NULLABLE",
-      "description": "Physical location identifier of the in-text citation within the document"
-    },
-    {
-      "name": "section",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "Section of the paper where the reference appears (e.g. Introduction, Methods, Results)"
-    },
-    {
-      "name": "function",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "Functional role of the citation in that section (e.g. background, compare, use)"
+      "description": ""
     }
   ]
 }

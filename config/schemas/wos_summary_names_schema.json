@@ -135,6 +135,6 @@
     "name": "claim_status",
     "type": "STRING",
     "mode": "NULLABLE",
-    "description": "Indicates if author profile is claimed"
+    "description": ""
   }
 ]

@@ -9,6 +9,7 @@ Complete step-by-step guide for deploying the WoS XML to BigQuery Dataflow Pipel
 - **Terraform** (>= 1.0): [Install](https://www.terraform.io/downloads)
 - **Python** (>= 3.11): [Install](https://www.python.org/downloads/)
 - **Docker**: [Install](https://docs.docker.com/get-docker/) (for Flex Template)
+- **Graphviz** (optional): For schema visualization (`pip install graphviz` + system binary)
 
 ### GCP Requirements
 - Active GCP project with billing enabled
@@ -623,6 +624,33 @@ Or include it in `--bq_dataset` as `project:dataset`.
 4. Create data validation queries
 5. Document operational runbook
 6. Schedule regular runs with Cloud Scheduler
+
+## Step 7: Schema Visualization (Optional)
+
+You can generate a visual diagram of the 46+ normalized tables and their relationships.
+
+### 7.1 Install Requirements
+```bash
+pip install graphviz
+# Also ensure Graphviz system binary is installed (e.g., brew install graphviz)
+```
+
+### 7.2 Run Visualization Script
+```bash
+# From project root
+python terraform/scripts/visualize_schema.py
+```
+
+### 7.3 Render Diagram
+```bash
+# To PNG
+dot -Tpng wos_schema.dot -o wos_schema.png
+
+# To SVG
+dot -Tsvg wos_schema.dot -o wos_schema.svg
+```
+
+*Note: If `dot` command is not available (e.g., on macOS 13), use the Python script above to generate the `.dot` file and paste its content into [Graphviz Online](https://dreampuf.github.io/GraphvizOnline/).*
 
 ## Support
 

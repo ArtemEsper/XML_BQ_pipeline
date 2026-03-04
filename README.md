@@ -84,6 +84,8 @@ XML_BQ_pipeline/
 │           ├── schema_generator.py
 │           └── registry.py       # BQ registry read/write/cleanup helpers
 ├── terraform/                # GCP infrastructure (buckets, BQ dataset, IAM)
+│   └── scripts/
+│       └── visualize_schema.py   # NEW: Generates Graphviz DOT schema diagram
 ├── config/schemas/           # 46 auto-generated BigQuery JSON schemas
 ├── parser/
 │   ├── wos_config.xml        # XML → table mapping (the "schema" for the parser)

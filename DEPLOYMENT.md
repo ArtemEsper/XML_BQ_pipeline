@@ -251,6 +251,7 @@ gcloud dataflow flex-template build "gs://${TEMPLATE_BUCKET}/templates/wos_pipel
   --metadata-file="metadata.json"
 
 # 4. Run the updated template
+# Optimization: use --parameters "sdk_container_image=${IMAGE_TAG}" to avoid runtime dependency installation
 gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
   --template-file-gcs-location="gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
   --region="${REGION}" \
@@ -261,7 +262,8 @@ gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
   --parameters "bq_dataset=$(cd terraform && terraform output -raw bigquery_full_dataset_id && cd ..)" \
   --parameters "dlq_bucket=$(cd terraform && terraform output -raw dlq_bucket_name && cd ..)" \
   --parameters "namespace=http://clarivate.com/schema/wok5.30/public/FullRecord" \
-  --parameters "parent_tag=records"
+  --parameters "parent_tag=records" \
+  --parameters "sdk_container_image=${IMAGE_TAG}"
 ```
 
 ## Step 6b: Running with Idempotent Processing (`--enable_dedup`)

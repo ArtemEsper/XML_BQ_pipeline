@@ -1,6 +1,5 @@
 # Dataflow Flex Template Dockerfile for WoS XML to BigQuery Pipeline
-# Based on Google's official Dataflow template base image
-
+# This image acts as BOTH the Template Launcher and the SDK Worker
 FROM gcr.io/dataflow-templates-base/python311-template-launcher-base:latest
 
 # Set working directory
@@ -8,9 +7,8 @@ WORKDIR /template
 
 # Set environment variables
 ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/template/launcher.py
-ENV FLEX_TEMPLATE_PYTHON_SETUP_FILE=/template/setup.py
 
-# Copy requirements and install dependencies
+# Install dependencies in the image to avoid runtime installation
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
@@ -34,5 +32,6 @@ RUN pip install -e .
 # Set permissions
 RUN chmod +x /template/src/wos_beam_pipeline/main.py
 
-# The entrypoint is set by the base image
-# It will execute FLEX_TEMPLATE_PYTHON_PY_FILE
+# IMPORTANT: By including all dependencies and code in this image, 
+# and passing --sdk_container_image to Dataflow, we avoid runtime 
+# dependency installation on workers.

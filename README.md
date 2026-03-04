@@ -229,6 +229,7 @@ TEMPLATE_BUCKET="${PROJECT_ID}-dataflow-temp-dev"
 # 3. Update template spec: gcloud dataflow flex-template build "gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" --image="${IMAGE_TAG}" --sdk-language="PYTHON" --metadata-file="metadata.json"
 
 # Run the job:
+# Optimization: use --parameters "sdk_container_image=${IMAGE_TAG}" to avoid runtime dependency installation
 gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
   --template-file-gcs-location="gs://${TEMPLATE_BUCKET}/templates/wos_pipeline.json" \
   --region="${REGION}" \
@@ -242,7 +243,8 @@ gcloud dataflow flex-template run "wos-xml-to-bq-$(date +%Y%m%d-%H%M%S)" \
   --parameters "dlq_bucket=${PROJECT_ID}-wos-dlq-dev" \
   --parameters "namespace=http://clarivate.com/schema/wok5.30/public/FullRecord" \
   --parameters "parent_tag=records" \
-  --parameters "bq_write_disposition=WRITE_APPEND"
+  --parameters "bq_write_disposition=WRITE_APPEND" \
+  --parameters "sdk_container_image=${IMAGE_TAG}"
 ```
 
 > **Shell quoting**: In `zsh`, always single-quote `--parameters` values that contain `*`, `://`, or `:`. Unquoted `*.xml` will be expanded by the shell before being passed to `gcloud`.

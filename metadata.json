@@ -113,6 +113,13 @@
       "isOptional": true,
       "paramType": "TEXT",
       "defaultValue": "false"
+    },
+    {
+      "name": "sdk_container_image",
+      "label": "SDK Container Image",
+      "helpText": "Docker image to use for Dataflow workers (pre-built with dependencies)",
+      "isOptional": true,
+      "paramType": "TEXT"
     }
   ]
 }

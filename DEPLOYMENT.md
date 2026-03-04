@@ -418,6 +418,32 @@ via `schemaUpdateOptions: ALLOW_FIELD_ADDITION`. No manual `ALTER TABLE` is need
 
 ---
 
+### 6.3 Updating the BigQuery Schema
+
+When you add new columns to `wos_schema_final.sql` or change the structure, follow this flow to update the existing BigQuery tables:
+
+1.  **Re-generate JSON schemas:**
+    ```bash
+    python -m wos_beam_pipeline.utils.schema_generator \
+      parser/wos_schema_final.sql \
+      config/schemas
+    ```
+
+2.  **Apply changes with Terraform:**
+    Navigate to the `terraform` directory and run apply. Terraform will detect the schema changes in `all_schemas.json` and update the BigQuery tables in-place.
+    ```bash
+    cd terraform
+    terraform apply
+    ```
+    *Note: BigQuery supports adding new nullable columns to existing tables without data loss.*
+
+3.  **Verify the update:**
+    Check if the new column exists in BigQuery:
+    ```bash
+    bq query --use_legacy_sql=false \
+      "SELECT column_name, data_type FROM \`${PROJECT_ID}.${ENVIRONMENT}.INFORMATION_SCHEMA.COLUMNS\` WHERE table_name = 'wos_summary' AND column_name = 'r_id_disclaimer'"
+    ```
+
 ## Step 7: Monitoring and Validation
 
 ### 7.1 Check Pipeline Status

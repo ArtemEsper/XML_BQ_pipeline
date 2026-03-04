@@ -1,5 +1,5 @@
 <records>
-	<REC table="wos_summary" file_number="wos_summary:file_number">
+	<REC table="wos_summary" file_number="wos_summary:file_number" r_id_disclaimer="wos_summary:r_id_disclaimer">
 		<UID></UID>
 		<static_data>
 			<summary>
@@ -14,7 +14,7 @@
 					<title table="wos_titles" ctr_id="wos_titles:title_id" type="wos_titles:title_type" lang_id="wos_titles:lang_id" translated="wos_titles:translated" non_english="wos_titles:non_english">wos_titles:title</title>
 				</titles>
 				<names count="wos_summary:name_count">
-					<name table="wos_summary_names" ctr_id="wos_summary_names:name_id" addr_no="wos_summary_names:addr_no_raw" role="wos_summary_names:role" reprint="wos_summary_names:reprint" lang_id="wos_summary_names:lang_id" r_id="wos_summary_names:r_id" r_id_tr="wos_summary_names:r_id_tr" orcid_id="wos_summary_names:orcid_id" orcid_id_tr="wos_summary_names:orcid_id_tr" dais_id="wos_summary_names:dais_id" display="wos_summary_names:display" seq_no="wos_summary_names:seq_no">
+					<name table="wos_summary_names" ctr_id="wos_summary_names:name_id" addr_no="wos_summary_names:addr_no_raw" role="wos_summary_names:role" reprint="wos_summary_names:reprint" lang_id="wos_summary_names:lang_id" r_id="wos_summary_names:r_id" r_id_tr="wos_summary_names:r_id_tr" orcid_id="wos_summary_names:orcid_id" orcid_id_tr="wos_summary_names:orcid_id_tr" dais_id="wos_summary_names:dais_id" display="wos_summary_names:display" seq_no="wos_summary_names:seq_no" claim_status="wos_summary_names:claim_status">
 						<display_name>wos_summary_names:display_name</display_name>
 						<full_name>wos_summary_names:full_name</full_name>
 						<prefix>wos_summary_names:prefix</prefix>
@@ -35,7 +35,7 @@
 						<address_spec addr_no="wos_publisher:addr_no">
 							<full_address lang_id="wos_publisher:full_address_lang_id">wos_publisher:full_address</full_address>
 							<organizations count="wos_publisher:organization_count">
-								<organization table="wos_publisher_organizations" ctr_id="wos_publisher_organizations:org_id" lang_id="wos_publisher_organizations:lang_id">wos_publisher_organizations:organization</organization>
+								<organization table="wos_publisher_organizations" ctr_id="wos_publisher_organizations:org_id" lang_id="wos_publisher_organizations:lang_id" pref="wos_publisher_organizations:pref">wos_publisher_organizations:organization</organization>
 							</organizations>
 							<suborganizations count="wos_publisher:suborganization_count">
 								<suborganization table="wos_publisher_suborganizations" ctr_id="wos_publisher_suborganizations:suborg_id" lang_id="wos_publisher_suborganizations:lang_id">wos_publisher_suborganizations:suborganization</suborganization>
@@ -68,6 +68,7 @@
 								<last_name>wos_publisher_names:last_name</last_name>
 								<suffix>wos_publisher_names:suffix</suffix>
 								<email_addr table="wos_publisher_names_email_addr" ctr_id="wos_publisher_names_email_addr:email_id" lang_id="wos_publisher_names_email_addr:lang_id">wos_publisher_names_email_addr:email_addr</email_addr>
+								<unified_name>wos_publisher_names:unified_name</unified_name>
 							</name>
 						</names>
 					</publisher>
@@ -131,7 +132,7 @@
 						<address_spec addr_no="wos_addresses:addr_no">
 							<full_address>wos_addresses:full_address</full_address>
 							<organizations count="wos_addresses:organization_count">
-								<organization table="wos_address_organizations" ctr_id="wos_address_organizations:org_id" lang_id="wos_address_organizations:lang_id">wos_address_organizations:organization</organization>
+								<organization table="wos_address_organizations" ctr_id="wos_address_organizations:org_id" lang_id="wos_address_organizations:lang_id" pref="wos_address_organizations:pref">wos_address_organizations:organization</organization>
 							</organizations>
 							<suborganizations count="wos_addresses:suborganization_count">
 								<suborganization table="wos_address_suborganizations" ctr_id="wos_address_suborganizations:suborg_id" lang_id="wos_address_suborganizations:lang_id">wos_address_suborganizations:suborganization</suborganization>
@@ -153,7 +154,7 @@
 							<zip table="wos_address_zip" ctr_id="wos_address_zip:zip_id" lang_id="wos_address_zip:lang_id" location="wos_address_zip:location">wos_address_zip:zip</zip>
 						</address_spec>
 						<names count="wos_addresses:name_count">
-							<name table="wos_address_names" ctr_id="wos_address_names:name_id" addr_no="wos_address_names:addr_no_raw" role="wos_address_names:role" reprint="wos_address_names:reprint" lang_id="wos_address_names:lang_id" r_id="wos_address_names:r_id" r_id_tr="wos_address_names:r_id_tr" orcid_id="wos_address_names:orcid_id" orcid_id_tr="wos_address_names:orcid_id_tr" dais_id="wos_address_names:dais_id" display="wos_address_names:display" seq_no="wos_address_names:seq_no">
+							<name table="wos_address_names" ctr_id="wos_address_names:name_id" addr_no="wos_address_names:addr_no_raw" role="wos_address_names:role" reprint="wos_address_names:reprint" lang_id="wos_address_names:lang_id" r_id="wos_address_names:r_id" r_id_tr="wos_address_names:r_id_tr" orcid_id="wos_address_names:orcid_id" orcid_id_tr="wos_address_names:orcid_id_tr" dais_id="wos_address_names:dais_id" display="wos_address_names:display" seq_no="wos_address_names:seq_no" claim_status="wos_address_names:claim_status">
 								<display_name>wos_address_names:display_name</display_name>
 								<full_name>wos_address_names:full_name</full_name>
 								<prefix>wos_address_names:prefix</prefix>
@@ -228,7 +229,7 @@
 					<address_spec addr_no="wos_reprint_addresses:addr_no">
 						<full_address>wos_reprint_addresses:full_address</full_address>
 						<organizations count="wos_reprint_addresses:organization_count">
-							<organization table="wos_reprint_address_organizations" ctr_id="wos_reprint_address_organizations:org_id" lang_id="wos_reprint_address_organizations:lang_id">wos_reprint_address_organizations:organization</organization>
+							<organization table="wos_reprint_address_organizations" ctr_id="wos_reprint_address_organizations:org_id" lang_id="wos_reprint_address_organizations:lang_id" pref="wos_reprint_address_organizations:pref">wos_reprint_address_organizations:organization</organization>
 						</organizations>
 						<suborganizations count="wos_reprint_addresses:suborganization_count">
 							<suborganization table="wos_reprint_address_suborganizations" ctr_id="wos_reprint_address_suborganizations:suborg_id" lang_id="wos_reprint_address_suborganizations:lang_id">wos_reprint_address_suborganizations:suborganization</suborganization>
@@ -250,7 +251,7 @@
 						<zip table="wos_reprint_address_zip" ctr_id="wos_reprint_address_zip:zip_id" lang_id="wos_reprint_address_zip:lang_id" location="wos_reprint_address_zip:location">wos_reprint_address_zip:zip</zip>
 					</address_spec>
 					<names count="wos_reprint_addresses:name_count">
-						<name table="wos_reprint_address_names" ctr_id="wos_reprint_address_names:name_id" addr_no="wos_reprint_address_names:addr_no_raw" role="wos_reprint_address_names:role" reprint="wos_reprint_address_names:reprint" lang_id="wos_reprint_address_names:lang_id" r_id="wos_reprint_address_names:r_id" r_id_tr="wos_reprint_address_names:r_id_tr" orcid_id="wos_reprint_address_names:orcid_id" orcid_id_tr="wos_reprint_address_names:orcid_id_tr" dais_id="wos_reprint_address_names:dais_id" display="wos_reprint_address_names:display" seq_no="wos_reprint_address_names:seq_no">
+						<name table="wos_reprint_address_names" ctr_id="wos_reprint_address_names:name_id" addr_no="wos_reprint_address_names:addr_no_raw" role="wos_reprint_address_names:role" reprint="wos_reprint_address_names:reprint" lang_id="wos_reprint_address_names:lang_id" r_id="wos_reprint_address_names:r_id" r_id_tr="wos_reprint_address_names:r_id_tr" orcid_id="wos_reprint_address_names:orcid_id" orcid_id_tr="wos_reprint_address_names:orcid_id_tr" dais_id="wos_reprint_address_names:dais_id" display="wos_reprint_address_names:display" seq_no="wos_reprint_address_names:seq_no" claim_status="wos_reprint_address_names:claim_status">
 							<display_name>wos_reprint_address_names:display_name</display_name>
 							<full_name>wos_reprint_address_names:full_name</full_name>
 							<prefix>wos_reprint_address_names:prefix</prefix>
@@ -290,7 +291,7 @@
 			</item>
 			<contributors count="wos_summary:contributor_count">
 				<contributor>
-					<name table="wos_contributors" ctr_id="wos_contributors:contrib_id" addr_no="wos_cpontributors:addr_no_raw" role="wos_contributors:role" reprint="wos_contributors:reprint" lang_id="wos_contributors:lang_id" r_id="wos_contributors:r_id" r_id_tr="wos_contributors:r_id_tr" orcid_id="wos_contributors:orcid_id" orcid_id_tr="wos_contributors:orcid_id_tr" dais_id="wos_contributors:dais_id" display="wos_contributors:display" seq_no="wos_contributors:seq_no">
+					<name table="wos_contributors" ctr_id="wos_contributors:contrib_id" addr_no="wos_cpontributors:addr_no_raw" role="wos_contributors:role" reprint="wos_contributors:reprint" lang_id="wos_contributors:lang_id" r_id="wos_contributors:r_id" r_id_tr="wos_contributors:r_id_tr" orcid_id="wos_contributors:orcid_id" orcid_id_tr="wos_contributors:orcid_id_tr" dais_id="wos_contributors:dais_id" display="wos_contributors:display" seq_no="wos_contributors:seq_no" claim_status="wos_contributors:claim_status">
 						<display_name>wos_contributors:display_name</display_name>
 						<full_name>wos_contributors:full_name</full_name>
 						<prefix>wos_contributors:prefix</prefix>

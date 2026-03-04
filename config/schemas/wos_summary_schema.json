@@ -346,5 +346,11 @@
     "type": "STRING",
     "mode": "NULLABLE",
     "description": ""
+  },
+  {
+    "name": "r_id_disclaimer",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Disclaimer for ResearcherID data"
   }
 ]

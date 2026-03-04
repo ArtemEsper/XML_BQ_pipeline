@@ -28,5 +28,11 @@
     "type": "STRING",
     "mode": "NULLABLE",
     "description": ""
+  },
+  {
+    "name": "pref",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Indicates if organization is preferred (Y) or division (D)"
   }
 ]

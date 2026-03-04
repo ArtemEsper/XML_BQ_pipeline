@@ -1,0 +1,744 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="952pt" height="1691pt" viewBox="0.00 0.00 952.00 1691.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1687)">
+<title>WOS_Schema</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-1687 947.96,-1687 947.96,4 -4,4"/>
+<!-- wos_abstract_paragraphs -->
+<g id="node1" class="node">
+<title>wos_abstract_paragraphs</title>
+<polygon fill="lightblue" stroke="black" points="593.9,-1683 416.81,-1683 416.81,-1647 593.9,-1647 593.9,-1683"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1660.8" font-family="Arial" font-size="14.00">wos_abstract_paragraphs</text>
+</g>
+<!-- wos_abstracts -->
+<g id="node2" class="node">
+<title>wos_abstracts</title>
+<polygon fill="lightblue" stroke="black" points="293.64,-1602 188.16,-1602 188.16,-1566 293.64,-1566 293.64,-1602"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1579.8" font-family="Arial" font-size="14.00">wos_abstracts</text>
+</g>
+<!-- wos_abstracts&#45;&gt;wos_abstract_paragraphs -->
+<g id="edge1" class="edge">
+<title>wos_abstracts-&gt;wos_abstract_paragraphs</title>
+<path fill="none" stroke="black" d="M282.17,-1602.45C308.36,-1613.9 343.47,-1628.24 375.56,-1638 385.19,-1640.93 395.32,-1643.65 405.49,-1646.15"/>
+<polygon fill="black" stroke="black" points="404.52,-1649.51 415.06,-1648.42 406.14,-1642.7 404.52,-1649.51"/>
+</g>
+<!-- wos_address_dois -->
+<g id="node3" class="node">
+<title>wos_address_dois</title>
+<polygon fill="lightblue" stroke="black" points="571.33,-1629 439.37,-1629 439.37,-1593 571.33,-1593 571.33,-1629"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1606.8" font-family="Arial" font-size="14.00">wos_address_dois</text>
+</g>
+<!-- wos_address_email_addr -->
+<g id="node4" class="node">
+<title>wos_address_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="593.12,-1575 417.58,-1575 417.58,-1539 593.12,-1539 593.12,-1575"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1552.8" font-family="Arial" font-size="14.00">wos_address_email_addr</text>
+</g>
+<!-- wos_address_names -->
+<g id="node5" class="node">
+<title>wos_address_names</title>
+<polygon fill="lightblue" stroke="black" points="579.5,-1521 431.21,-1521 431.21,-1485 579.5,-1485 579.5,-1521"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1498.8" font-family="Arial" font-size="14.00">wos_address_names</text>
+</g>
+<!-- wos_address_names_email_addr -->
+<g id="node6" class="node">
+<title>wos_address_names_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="920.23,-1521 694.88,-1521 694.88,-1485 920.23,-1485 920.23,-1521"/>
+<text xml:space="preserve" text-anchor="middle" x="807.56" y="-1498.8" font-family="Arial" font-size="14.00">wos_address_names_email_addr</text>
+</g>
+<!-- wos_address_names&#45;&gt;wos_address_names_email_addr -->
+<g id="edge2" class="edge">
+<title>wos_address_names-&gt;wos_address_names_email_addr</title>
+<path fill="none" stroke="black" d="M579.79,-1503C610.96,-1503 648.16,-1503 683.32,-1503"/>
+<polygon fill="black" stroke="black" points="683.15,-1506.5 693.15,-1503 683.15,-1499.5 683.15,-1506.5"/>
+</g>
+<!-- wos_address_organizations -->
+<g id="node7" class="node">
+<title>wos_address_organizations</title>
+<polygon fill="lightblue" stroke="black" points="600.13,-1467 410.58,-1467 410.58,-1431 600.13,-1431 600.13,-1467"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1444.8" font-family="Arial" font-size="14.00">wos_address_organizations</text>
+</g>
+<!-- wos_address_suborganizations -->
+<g id="node8" class="node">
+<title>wos_address_suborganizations</title>
+<polygon fill="lightblue" stroke="black" points="611.42,-1413 399.29,-1413 399.29,-1377 611.42,-1377 611.42,-1413"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1390.8" font-family="Arial" font-size="14.00">wos_address_suborganizations</text>
+</g>
+<!-- wos_address_zip -->
+<g id="node9" class="node">
+<title>wos_address_zip</title>
+<polygon fill="lightblue" stroke="black" points="567.44,-1359 443.27,-1359 443.27,-1323 567.44,-1323 567.44,-1359"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1336.8" font-family="Arial" font-size="14.00">wos_address_zip</text>
+</g>
+<!-- wos_addresses -->
+<g id="node10" class="node">
+<title>wos_addresses</title>
+<polygon fill="lightblue" stroke="black" points="297.54,-1467 184.26,-1467 184.26,-1431 297.54,-1431 297.54,-1467"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1444.8" font-family="Arial" font-size="14.00">wos_addresses</text>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_dois -->
+<g id="edge3" class="edge">
+<title>wos_addresses-&gt;wos_address_dois</title>
+<path fill="none" stroke="black" d="M257.57,-1467.26C286.47,-1500.49 347.75,-1568.86 375.56,-1584 391.51,-1592.68 409.98,-1598.58 427.85,-1602.58"/>
+<polygon fill="black" stroke="black" points="426.9,-1605.96 437.4,-1604.53 428.3,-1599.1 426.9,-1605.96"/>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_email_addr -->
+<g id="edge4" class="edge">
+<title>wos_addresses-&gt;wos_address_email_addr</title>
+<path fill="none" stroke="black" d="M266.19,-1467.22C292.01,-1485.72 334.67,-1513.87 375.56,-1530 385.34,-1533.86 395.76,-1537.2 406.28,-1540.09"/>
+<polygon fill="black" stroke="black" points="405.24,-1543.43 415.8,-1542.56 407,-1536.66 405.24,-1543.43"/>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_names -->
+<g id="edge5" class="edge">
+<title>wos_addresses-&gt;wos_address_names</title>
+<path fill="none" stroke="black" d="M297.88,-1460.52C333.38,-1467.82 379.99,-1477.41 419.93,-1485.63"/>
+<polygon fill="black" stroke="black" points="419.02,-1489.02 429.52,-1487.6 420.43,-1482.16 419.02,-1489.02"/>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_organizations -->
+<g id="edge6" class="edge">
+<title>wos_addresses-&gt;wos_address_organizations</title>
+<path fill="none" stroke="black" d="M297.88,-1449C327.36,-1449 364.49,-1449 399.11,-1449"/>
+<polygon fill="black" stroke="black" points="398.73,-1452.5 408.73,-1449 398.73,-1445.5 398.73,-1452.5"/>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_suborganizations -->
+<g id="edge7" class="edge">
+<title>wos_addresses-&gt;wos_address_suborganizations</title>
+<path fill="none" stroke="black" d="M297.88,-1437.48C328.65,-1431.15 367.75,-1423.11 403.63,-1415.72"/>
+<polygon fill="black" stroke="black" points="404.07,-1419.21 413.16,-1413.76 402.66,-1412.35 404.07,-1419.21"/>
+</g>
+<!-- wos_addresses&#45;&gt;wos_address_zip -->
+<g id="edge8" class="edge">
+<title>wos_addresses-&gt;wos_address_zip</title>
+<path fill="none" stroke="black" d="M277.85,-1430.66C296.6,-1420.71 319.71,-1407.84 339.56,-1395 356.35,-1384.14 357.34,-1376.25 375.56,-1368 393.05,-1360.08 412.93,-1354.45 431.76,-1350.46"/>
+<polygon fill="black" stroke="black" points="432.38,-1353.91 441.52,-1348.54 431.03,-1347.04 432.38,-1353.91"/>
+</g>
+<!-- wos_book_desc -->
+<g id="node11" class="node">
+<title>wos_book_desc</title>
+<polygon fill="lightblue" stroke="black" points="299.1,-1386 182.7,-1386 182.7,-1350 299.1,-1350 299.1,-1386"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1363.8" font-family="Arial" font-size="14.00">wos_book_desc</text>
+</g>
+<!-- wos_book_notes -->
+<g id="node12" class="node">
+<title>wos_book_notes</title>
+<polygon fill="lightblue" stroke="black" points="301.44,-1332 180.36,-1332 180.36,-1296 301.44,-1296 301.44,-1332"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1309.8" font-family="Arial" font-size="14.00">wos_book_notes</text>
+</g>
+<!-- wos_chapters -->
+<g id="node13" class="node">
+<title>wos_chapters</title>
+<polygon fill="lightblue" stroke="black" points="292.09,-1278 189.71,-1278 189.71,-1242 292.09,-1242 292.09,-1278"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1255.8" font-family="Arial" font-size="14.00">wos_chapters</text>
+</g>
+<!-- wos_conf_date -->
+<g id="node14" class="node">
+<title>wos_conf_date</title>
+<polygon fill="lightblue" stroke="black" points="560.44,-1305 450.26,-1305 450.26,-1269 560.44,-1269 560.44,-1305"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1282.8" font-family="Arial" font-size="14.00">wos_conf_date</text>
+</g>
+<!-- wos_conf_info -->
+<g id="node15" class="node">
+<title>wos_conf_info</title>
+<polygon fill="lightblue" stroke="black" points="558.1,-1251 452.6,-1251 452.6,-1215 558.1,-1215 558.1,-1251"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1228.8" font-family="Arial" font-size="14.00">wos_conf_info</text>
+</g>
+<!-- wos_conf_location -->
+<g id="node16" class="node">
+<title>wos_conf_location</title>
+<polygon fill="lightblue" stroke="black" points="570.95,-1197 439.76,-1197 439.76,-1161 570.95,-1161 570.95,-1197"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1174.8" font-family="Arial" font-size="14.00">wos_conf_location</text>
+</g>
+<!-- wos_conf_sponsor -->
+<g id="node17" class="node">
+<title>wos_conf_sponsor</title>
+<polygon fill="lightblue" stroke="black" points="571.72,-1143 438.98,-1143 438.98,-1107 571.72,-1107 571.72,-1143"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1120.8" font-family="Arial" font-size="14.00">wos_conf_sponsor</text>
+</g>
+<!-- wos_conf_title -->
+<g id="node18" class="node">
+<title>wos_conf_title</title>
+<polygon fill="lightblue" stroke="black" points="557.71,-1089 453,-1089 453,-1053 557.71,-1053 557.71,-1089"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1066.8" font-family="Arial" font-size="14.00">wos_conf_title</text>
+</g>
+<!-- wos_conference -->
+<g id="node19" class="node">
+<title>wos_conference</title>
+<polygon fill="lightblue" stroke="black" points="299.88,-1224 181.92,-1224 181.92,-1188 299.88,-1188 299.88,-1224"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1201.8" font-family="Arial" font-size="14.00">wos_conference</text>
+</g>
+<!-- wos_conference&#45;&gt;wos_conf_date -->
+<g id="edge9" class="edge">
+<title>wos_conference-&gt;wos_conf_date</title>
+<path fill="none" stroke="black" d="M300.28,-1218.31C313.54,-1222.14 327.32,-1226.99 339.56,-1233 357.51,-1241.82 357.34,-1251.75 375.56,-1260 395.32,-1268.94 418.13,-1274.97 439.02,-1279.01"/>
+<polygon fill="black" stroke="black" points="438.12,-1282.4 448.58,-1280.73 439.36,-1275.51 438.12,-1282.4"/>
+</g>
+<!-- wos_conference&#45;&gt;wos_conf_info -->
+<g id="edge10" class="edge">
+<title>wos_conference-&gt;wos_conf_info</title>
+<path fill="none" stroke="black" d="M300.15,-1211.99C341.92,-1216.29 398.17,-1222.08 441.05,-1226.49"/>
+<polygon fill="black" stroke="black" points="440.68,-1229.97 450.99,-1227.51 441.4,-1223 440.68,-1229.97"/>
+</g>
+<!-- wos_conference&#45;&gt;wos_conf_location -->
+<g id="edge11" class="edge">
+<title>wos_conference-&gt;wos_conf_location</title>
+<path fill="none" stroke="black" d="M300.15,-1200.01C337.83,-1196.13 387.29,-1191.04 428.09,-1186.85"/>
+<polygon fill="black" stroke="black" points="428.26,-1190.35 437.85,-1185.84 427.54,-1183.38 428.26,-1190.35"/>
+</g>
+<!-- wos_conference&#45;&gt;wos_conf_sponsor -->
+<g id="edge12" class="edge">
+<title>wos_conference-&gt;wos_conf_sponsor</title>
+<path fill="none" stroke="black" d="M300.28,-1193.69C313.54,-1189.86 327.32,-1185.01 339.56,-1179 357.51,-1170.18 357.34,-1160.25 375.56,-1152 391.85,-1144.63 410.21,-1139.24 427.86,-1135.31"/>
+<polygon fill="black" stroke="black" points="428.18,-1138.82 437.25,-1133.36 426.75,-1131.97 428.18,-1138.82"/>
+</g>
+<!-- wos_conference&#45;&gt;wos_conf_title -->
+<g id="edge13" class="edge">
+<title>wos_conference-&gt;wos_conf_title</title>
+<path fill="none" stroke="black" d="M300.26,-1198.73C314.34,-1194.72 328.5,-1188.53 339.56,-1179 369.4,-1153.29 344.92,-1122.76 375.56,-1098 393.95,-1083.14 418.53,-1075.88 441.28,-1072.51"/>
+<polygon fill="black" stroke="black" points="441.62,-1075.99 451.11,-1071.3 440.76,-1069.04 441.62,-1075.99"/>
+</g>
+<!-- wos_contributor_email_addr -->
+<g id="node20" class="node">
+<title>wos_contributor_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="601.29,-1035 409.42,-1035 409.42,-999 601.29,-999 601.29,-1035"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-1012.8" font-family="Arial" font-size="14.00">wos_contributor_email_addr</text>
+</g>
+<!-- wos_contributors -->
+<g id="node21" class="node">
+<title>wos_contributors</title>
+<polygon fill="lightblue" stroke="black" points="301.81,-1170 179.99,-1170 179.99,-1134 301.81,-1134 301.81,-1170"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1147.8" font-family="Arial" font-size="14.00">wos_contributors</text>
+</g>
+<!-- wos_contributors&#45;&gt;wos_contributor_email_addr -->
+<g id="edge14" class="edge">
+<title>wos_contributors-&gt;wos_contributor_email_addr</title>
+<path fill="none" stroke="black" d="M302.3,-1144.13C315.7,-1140.11 329.03,-1134.07 339.56,-1125 369.4,-1099.29 344.92,-1068.76 375.56,-1044 382.49,-1038.4 390.31,-1033.87 398.57,-1030.23"/>
+<polygon fill="black" stroke="black" points="399.78,-1033.52 407.83,-1026.63 397.24,-1026.99 399.78,-1033.52"/>
+</g>
+<!-- wos_doctypes -->
+<g id="node22" class="node">
+<title>wos_doctypes</title>
+<polygon fill="lightblue" stroke="black" points="293.26,-1116 188.54,-1116 188.54,-1080 293.26,-1080 293.26,-1116"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1093.8" font-family="Arial" font-size="14.00">wos_doctypes</text>
+</g>
+<!-- wos_dynamic_citation_topics -->
+<g id="node23" class="node">
+<title>wos_dynamic_citation_topics</title>
+<polygon fill="lightblue" stroke="black" points="339.56,-1062 142.24,-1062 142.24,-1026 339.56,-1026 339.56,-1062"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-1039.8" font-family="Arial" font-size="14.00">wos_dynamic_citation_topics</text>
+</g>
+<!-- wos_dynamic_identifiers -->
+<g id="node24" class="node">
+<title>wos_dynamic_identifiers</title>
+<polygon fill="lightblue" stroke="black" points="325.16,-1008 156.64,-1008 156.64,-972 325.16,-972 325.16,-1008"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-985.8" font-family="Arial" font-size="14.00">wos_dynamic_identifiers</text>
+</g>
+<!-- wos_edition -->
+<g id="node25" class="node">
+<title>wos_edition</title>
+<polygon fill="lightblue" stroke="black" points="285.87,-954 195.93,-954 195.93,-918 285.87,-918 285.87,-954"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-931.8" font-family="Arial" font-size="14.00">wos_edition</text>
+</g>
+<!-- wos_grant_agencies -->
+<g id="node26" class="node">
+<title>wos_grant_agencies</title>
+<polygon fill="lightblue" stroke="black" points="577.56,-954 433.14,-954 433.14,-918 577.56,-918 577.56,-954"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-931.8" font-family="Arial" font-size="14.00">wos_grant_agencies</text>
+</g>
+<!-- wos_grant_alt_agencies -->
+<g id="node27" class="node">
+<title>wos_grant_alt_agencies</title>
+<polygon fill="lightblue" stroke="black" points="588.85,-900 421.86,-900 421.86,-864 588.85,-864 588.85,-900"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-877.8" font-family="Arial" font-size="14.00">wos_grant_alt_agencies</text>
+</g>
+<!-- wos_grant_ids -->
+<g id="node28" class="node">
+<title>wos_grant_ids</title>
+<polygon fill="lightblue" stroke="black" points="558.49,-846 452.22,-846 452.22,-810 558.49,-810 558.49,-846"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-823.8" font-family="Arial" font-size="14.00">wos_grant_ids</text>
+</g>
+<!-- wos_grants -->
+<g id="node29" class="node">
+<title>wos_grants</title>
+<polygon fill="lightblue" stroke="black" points="284.7,-900 197.1,-900 197.1,-864 284.7,-864 284.7,-900"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-877.8" font-family="Arial" font-size="14.00">wos_grants</text>
+</g>
+<!-- wos_grants&#45;&gt;wos_grant_agencies -->
+<g id="edge15" class="edge">
+<title>wos_grants-&gt;wos_grant_agencies</title>
+<path fill="none" stroke="black" d="M284.94,-890.86C321.96,-898.47 376.39,-909.67 421.78,-919.01"/>
+<polygon fill="black" stroke="black" points="420.82,-922.39 431.32,-920.97 422.23,-915.53 420.82,-922.39"/>
+</g>
+<!-- wos_grants&#45;&gt;wos_grant_alt_agencies -->
+<g id="edge16" class="edge">
+<title>wos_grants-&gt;wos_grant_alt_agencies</title>
+<path fill="none" stroke="black" d="M284.94,-882C318.85,-882 367.38,-882 410.18,-882"/>
+<polygon fill="black" stroke="black" points="409.99,-885.5 419.99,-882 409.99,-878.5 409.99,-885.5"/>
+</g>
+<!-- wos_grants&#45;&gt;wos_grant_ids -->
+<g id="edge17" class="edge">
+<title>wos_grants-&gt;wos_grant_ids</title>
+<path fill="none" stroke="black" d="M284.94,-873.14C327.22,-864.45 392.22,-851.07 440.51,-841.14"/>
+<polygon fill="black" stroke="black" points="441.21,-844.57 450.3,-839.12 439.8,-837.71 441.21,-844.57"/>
+</g>
+<!-- wos_headings -->
+<g id="node30" class="node">
+<title>wos_headings</title>
+<polygon fill="lightblue" stroke="black" points="293.65,-846 188.14,-846 188.14,-810 293.65,-810 293.65,-846"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-823.8" font-family="Arial" font-size="14.00">wos_headings</text>
+</g>
+<!-- wos_keywords -->
+<g id="node31" class="node">
+<title>wos_keywords</title>
+<polygon fill="lightblue" stroke="black" points="294.81,-792 186.99,-792 186.99,-756 294.81,-756 294.81,-792"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-769.8" font-family="Arial" font-size="14.00">wos_keywords</text>
+</g>
+<!-- wos_keywords_plus -->
+<g id="node32" class="node">
+<title>wos_keywords_plus</title>
+<polygon fill="lightblue" stroke="black" points="311.54,-738 170.26,-738 170.26,-702 311.54,-702 311.54,-738"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-715.8" font-family="Arial" font-size="14.00">wos_keywords_plus</text>
+</g>
+<!-- wos_languages -->
+<g id="node33" class="node">
+<title>wos_languages</title>
+<polygon fill="lightblue" stroke="black" points="297.55,-684 184.25,-684 184.25,-648 297.55,-648 297.55,-684"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-661.8" font-family="Arial" font-size="14.00">wos_languages</text>
+</g>
+<!-- wos_normalized_doctypes -->
+<g id="node34" class="node">
+<title>wos_normalized_doctypes</title>
+<polygon fill="lightblue" stroke="black" points="331.39,-630 150.41,-630 150.41,-594 331.39,-594 331.39,-630"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-607.8" font-family="Arial" font-size="14.00">wos_normalized_doctypes</text>
+</g>
+<!-- wos_normalized_languages -->
+<g id="node35" class="node">
+<title>wos_normalized_languages</title>
+<polygon fill="lightblue" stroke="black" points="335.68,-576 146.12,-576 146.12,-540 335.68,-540 335.68,-576"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-553.8" font-family="Arial" font-size="14.00">wos_normalized_languages</text>
+</g>
+<!-- wos_page -->
+<g id="node36" class="node">
+<title>wos_page</title>
+<polygon fill="lightblue" stroke="black" points="280.81,-522 200.99,-522 200.99,-486 280.81,-486 280.81,-522"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-499.8" font-family="Arial" font-size="14.00">wos_page</text>
+</g>
+<!-- wos_publisher -->
+<g id="node37" class="node">
+<title>wos_publisher</title>
+<polygon fill="lightblue" stroke="black" points="293.65,-468 188.15,-468 188.15,-432 293.65,-432 293.65,-468"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-445.8" font-family="Arial" font-size="14.00">wos_publisher</text>
+</g>
+<!-- wos_publisher_dois -->
+<g id="node38" class="node">
+<title>wos_publisher_dois</title>
+<polygon fill="lightblue" stroke="black" points="574.84,-738 435.87,-738 435.87,-702 574.84,-702 574.84,-738"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-715.8" font-family="Arial" font-size="14.00">wos_publisher_dois</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_dois -->
+<g id="edge18" class="edge">
+<title>wos_publisher-&gt;wos_publisher_dois</title>
+<path fill="none" stroke="black" d="M294.14,-453.46C310.83,-457.16 327.96,-464.12 339.56,-477 404.68,-549.32 308.18,-622.77 375.56,-693 388.39,-706.38 406.03,-713.99 424.15,-718.14"/>
+<polygon fill="black" stroke="black" points="423.48,-721.58 433.96,-720.02 424.79,-714.7 423.48,-721.58"/>
+</g>
+<!-- wos_publisher_email_addr -->
+<g id="node39" class="node">
+<title>wos_publisher_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="596.63,-684 414.08,-684 414.08,-648 596.63,-648 596.63,-684"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-661.8" font-family="Arial" font-size="14.00">wos_publisher_email_addr</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_email_addr -->
+<g id="edge19" class="edge">
+<title>wos_publisher-&gt;wos_publisher_email_addr</title>
+<path fill="none" stroke="black" d="M294.01,-453.88C310.59,-457.62 327.68,-464.5 339.56,-477 390.36,-530.47 323.09,-587.16 375.56,-639 383.48,-646.83 393.06,-652.65 403.37,-656.96"/>
+<polygon fill="black" stroke="black" points="401.87,-660.14 412.47,-660.25 404.26,-653.56 401.87,-660.14"/>
+</g>
+<!-- wos_publisher_names -->
+<g id="node40" class="node">
+<title>wos_publisher_names</title>
+<polygon fill="lightblue" stroke="black" points="583,-630 427.7,-630 427.7,-594 583,-594 583,-630"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-607.8" font-family="Arial" font-size="14.00">wos_publisher_names</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_names -->
+<g id="edge20" class="edge">
+<title>wos_publisher-&gt;wos_publisher_names</title>
+<path fill="none" stroke="black" d="M294.05,-454.77C310.34,-458.6 327.25,-465.31 339.56,-477 376.25,-511.83 337.78,-551.34 375.56,-585 387.09,-595.27 401.51,-602 416.49,-606.35"/>
+<polygon fill="black" stroke="black" points="415.44,-609.69 425.99,-608.73 417.15,-602.9 415.44,-609.69"/>
+</g>
+<!-- wos_publisher_organizations -->
+<g id="node42" class="node">
+<title>wos_publisher_organizations</title>
+<polygon fill="lightblue" stroke="black" points="603.63,-576 407.07,-576 407.07,-540 603.63,-540 603.63,-576"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-553.8" font-family="Arial" font-size="14.00">wos_publisher_organizations</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_organizations -->
+<g id="edge21" class="edge">
+<title>wos_publisher-&gt;wos_publisher_organizations</title>
+<path fill="none" stroke="black" d="M294.14,-457.24C309.79,-461.23 326.3,-467.41 339.56,-477 362.93,-493.91 351.67,-514.84 375.56,-531 381.91,-535.3 388.82,-538.94 396.02,-542.01"/>
+<polygon fill="black" stroke="black" points="394.75,-545.27 405.34,-545.58 397.26,-538.73 394.75,-545.27"/>
+</g>
+<!-- wos_publisher_suborganizations -->
+<g id="node43" class="node">
+<title>wos_publisher_suborganizations</title>
+<polygon fill="lightblue" stroke="black" points="614.92,-522 395.79,-522 395.79,-486 614.92,-486 614.92,-522"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-499.8" font-family="Arial" font-size="14.00">wos_publisher_suborganizations</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_suborganizations -->
+<g id="edge22" class="edge">
+<title>wos_publisher-&gt;wos_publisher_suborganizations</title>
+<path fill="none" stroke="black" d="M294.07,-460.73C325.36,-467.17 366.22,-475.58 403.59,-483.27"/>
+<polygon fill="black" stroke="black" points="402.56,-486.63 413.06,-485.22 403.97,-479.77 402.56,-486.63"/>
+</g>
+<!-- wos_publisher_zip -->
+<g id="node44" class="node">
+<title>wos_publisher_zip</title>
+<polygon fill="lightblue" stroke="black" points="570.94,-468 439.76,-468 439.76,-432 570.94,-432 570.94,-468"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-445.8" font-family="Arial" font-size="14.00">wos_publisher_zip</text>
+</g>
+<!-- wos_publisher&#45;&gt;wos_publisher_zip -->
+<g id="edge23" class="edge">
+<title>wos_publisher-&gt;wos_publisher_zip</title>
+<path fill="none" stroke="black" d="M294.07,-450C332.49,-450 385.33,-450 428.43,-450"/>
+<polygon fill="black" stroke="black" points="428.22,-453.5 438.22,-450 428.22,-446.5 428.22,-453.5"/>
+</g>
+<!-- wos_publisher_names_email_addr -->
+<g id="node41" class="node">
+<title>wos_publisher_names_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="923.73,-630 691.38,-630 691.38,-594 923.73,-594 923.73,-630"/>
+<text xml:space="preserve" text-anchor="middle" x="807.56" y="-607.8" font-family="Arial" font-size="14.00">wos_publisher_names_email_addr</text>
+</g>
+<!-- wos_publisher_names&#45;&gt;wos_publisher_names_email_addr -->
+<g id="edge24" class="edge">
+<title>wos_publisher_names-&gt;wos_publisher_names_email_addr</title>
+<path fill="none" stroke="black" d="M583.27,-612C612.57,-612 646.78,-612 679.5,-612"/>
+<polygon fill="black" stroke="black" points="679.49,-615.5 689.49,-612 679.49,-608.5 679.49,-615.5"/>
+</g>
+<!-- wos_reference_section -->
+<g id="node45" class="node">
+<title>wos_reference_section</title>
+<polygon fill="lightblue" stroke="black" points="585.34,-414 425.37,-414 425.37,-378 585.34,-378 585.34,-414"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-391.8" font-family="Arial" font-size="14.00">wos_reference_section</text>
+</g>
+<!-- wos_references -->
+<g id="node46" class="node">
+<title>wos_references</title>
+<polygon fill="lightblue" stroke="black" points="298.31,-414 183.49,-414 183.49,-378 298.31,-378 298.31,-414"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-391.8" font-family="Arial" font-size="14.00">wos_references</text>
+</g>
+<!-- wos_references&#45;&gt;wos_reference_section -->
+<g id="edge25" class="edge">
+<title>wos_references-&gt;wos_reference_section</title>
+<path fill="none" stroke="black" d="M298.52,-396C332.13,-396 375.5,-396 413.76,-396"/>
+<polygon fill="black" stroke="black" points="413.42,-399.5 423.42,-396 413.42,-392.5 413.42,-399.5"/>
+</g>
+<!-- wos_reprint_address_dois -->
+<g id="node47" class="node">
+<title>wos_reprint_address_dois</title>
+<polygon fill="lightblue" stroke="black" points="595.07,-360 415.64,-360 415.64,-324 595.07,-324 595.07,-360"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-337.8" font-family="Arial" font-size="14.00">wos_reprint_address_dois</text>
+</g>
+<!-- wos_reprint_address_email_addr -->
+<g id="node48" class="node">
+<title>wos_reprint_address_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="616.86,-306 393.85,-306 393.85,-270 616.86,-270 616.86,-306"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-283.8" font-family="Arial" font-size="14.00">wos_reprint_address_email_addr</text>
+</g>
+<!-- wos_reprint_address_names -->
+<g id="node49" class="node">
+<title>wos_reprint_address_names</title>
+<polygon fill="lightblue" stroke="black" points="603.24,-252 407.47,-252 407.47,-216 603.24,-216 603.24,-252"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-229.8" font-family="Arial" font-size="14.00">wos_reprint_address_names</text>
+</g>
+<!-- wos_reprint_address_names_email_addr -->
+<g id="node50" class="node">
+<title>wos_reprint_address_names_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="943.96,-252 671.15,-252 671.15,-216 943.96,-216 943.96,-252"/>
+<text xml:space="preserve" text-anchor="middle" x="807.56" y="-229.8" font-family="Arial" font-size="14.00">wos_reprint_address_names_email_addr</text>
+</g>
+<!-- wos_reprint_address_names&#45;&gt;wos_reprint_address_names_email_addr -->
+<g id="edge26" class="edge">
+<title>wos_reprint_address_names-&gt;wos_reprint_address_names_email_addr</title>
+<path fill="none" stroke="black" d="M603.41,-234C621.29,-234 640.33,-234 659.32,-234"/>
+<polygon fill="black" stroke="black" points="659.28,-237.5 669.28,-234 659.28,-230.5 659.28,-237.5"/>
+</g>
+<!-- wos_reprint_address_organizations -->
+<g id="node51" class="node">
+<title>wos_reprint_address_organizations</title>
+<polygon fill="lightblue" stroke="black" points="623.86,-198 386.84,-198 386.84,-162 623.86,-162 623.86,-198"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-175.8" font-family="Arial" font-size="14.00">wos_reprint_address_organizations</text>
+</g>
+<!-- wos_reprint_address_suborganizations -->
+<g id="node52" class="node">
+<title>wos_reprint_address_suborganizations</title>
+<polygon fill="lightblue" stroke="black" points="635.15,-144 375.56,-144 375.56,-108 635.15,-108 635.15,-144"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-121.8" font-family="Arial" font-size="14.00">wos_reprint_address_suborganizations</text>
+</g>
+<!-- wos_reprint_address_zip -->
+<g id="node53" class="node">
+<title>wos_reprint_address_zip</title>
+<polygon fill="lightblue" stroke="black" points="591.17,-90 419.53,-90 419.53,-54 591.17,-54 591.17,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-67.8" font-family="Arial" font-size="14.00">wos_reprint_address_zip</text>
+</g>
+<!-- wos_reprint_addresses -->
+<g id="node54" class="node">
+<title>wos_reprint_addresses</title>
+<polygon fill="lightblue" stroke="black" points="321.27,-360 160.53,-360 160.53,-324 321.27,-324 321.27,-360"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-337.8" font-family="Arial" font-size="14.00">wos_reprint_addresses</text>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_dois -->
+<g id="edge27" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_dois</title>
+<path fill="none" stroke="black" d="M321.71,-342C347.69,-342 376.87,-342 404.14,-342"/>
+<polygon fill="black" stroke="black" points="403.78,-345.5 413.78,-342 403.78,-338.5 403.78,-345.5"/>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_email_addr -->
+<g id="edge28" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_email_addr</title>
+<path fill="none" stroke="black" d="M321.71,-325.58C347.56,-320.26 376.57,-314.29 403.72,-308.7"/>
+<polygon fill="black" stroke="black" points="404.26,-312.17 413.35,-306.72 402.85,-305.31 404.26,-312.17"/>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_names -->
+<g id="edge29" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_names</title>
+<path fill="none" stroke="black" d="M321.47,-325.36C327.87,-322.44 334,-319.02 339.56,-315 362.93,-298.09 351.67,-277.16 375.56,-261 382.05,-256.61 389.12,-252.91 396.49,-249.79"/>
+<polygon fill="black" stroke="black" points="397.57,-253.13 405.68,-246.3 395.08,-246.58 397.57,-253.13"/>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_organizations -->
+<g id="edge30" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_organizations</title>
+<path fill="none" stroke="black" d="M321.3,-327.61C327.97,-324.23 334.2,-320.09 339.56,-315 376.25,-280.17 337.78,-240.66 375.56,-207 376.34,-206.3 377.14,-205.62 377.95,-204.95"/>
+<polygon fill="black" stroke="black" points="379.75,-207.97 385.84,-199.3 375.67,-202.28 379.75,-207.97"/>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_suborganizations -->
+<g id="edge31" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_suborganizations</title>
+<path fill="none" stroke="black" d="M321.4,-328.42C328.13,-324.89 334.35,-320.48 339.56,-315 390.36,-261.53 323.09,-204.84 375.56,-153 376.07,-152.5 376.58,-152 377.1,-151.52"/>
+<polygon fill="black" stroke="black" points="379.27,-154.27 384.9,-145.29 374.9,-148.8 379.27,-154.27"/>
+</g>
+<!-- wos_reprint_addresses&#45;&gt;wos_reprint_address_zip -->
+<g id="edge32" class="edge">
+<title>wos_reprint_addresses-&gt;wos_reprint_address_zip</title>
+<path fill="none" stroke="black" d="M321.71,-328.7C328.38,-325.12 334.5,-320.62 339.56,-315 404.68,-242.68 308.18,-169.23 375.56,-99 384.55,-89.63 395.9,-83.09 408.11,-78.58"/>
+<polygon fill="black" stroke="black" points="409.11,-81.94 417.59,-75.58 407,-75.26 409.11,-81.94"/>
+</g>
+<!-- wos_reviewed_authors -->
+<g id="node55" class="node">
+<title>wos_reviewed_authors</title>
+<polygon fill="lightblue" stroke="black" points="320.5,-306 161.3,-306 161.3,-270 320.5,-270 320.5,-306"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-283.8" font-family="Arial" font-size="14.00">wos_reviewed_authors</text>
+</g>
+<!-- wos_reviewed_languages -->
+<g id="node56" class="node">
+<title>wos_reviewed_languages</title>
+<polygon fill="lightblue" stroke="black" points="329.45,-252 152.34,-252 152.34,-216 329.45,-216 329.45,-252"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-229.8" font-family="Arial" font-size="14.00">wos_reviewed_languages</text>
+</g>
+<!-- wos_subheadings -->
+<g id="node57" class="node">
+<title>wos_subheadings</title>
+<polygon fill="lightblue" stroke="black" points="304.94,-198 176.86,-198 176.86,-162 304.94,-162 304.94,-198"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-175.8" font-family="Arial" font-size="14.00">wos_subheadings</text>
+</g>
+<!-- wos_subjects -->
+<g id="node58" class="node">
+<title>wos_subjects</title>
+<polygon fill="lightblue" stroke="black" points="290.92,-144 190.88,-144 190.88,-108 290.92,-108 290.92,-144"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-121.8" font-family="Arial" font-size="14.00">wos_subjects</text>
+</g>
+<!-- wos_summary -->
+<g id="node59" class="node">
+<title>wos_summary</title>
+<polygon fill="lightblue" stroke="black" points="106.24,-765 0,-765 0,-729 106.24,-729 106.24,-765"/>
+<text xml:space="preserve" text-anchor="middle" x="53.12" y="-742.8" font-family="Arial" font-size="14.00">wos_summary</text>
+</g>
+<!-- wos_summary&#45;&gt;wos_abstracts -->
+<g id="edge33" class="edge">
+<title>wos_summary-&gt;wos_abstracts</title>
+<path fill="none" stroke="black" d="M54.83,-765.18C58.96,-864.65 81.69,-1343.18 142.24,-1476 157.14,-1508.69 185.6,-1538.37 207.97,-1558.31"/>
+<polygon fill="black" stroke="black" points="205.52,-1560.82 215.37,-1564.73 210.11,-1555.53 205.52,-1560.82"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_addresses -->
+<g id="edge34" class="edge">
+<title>wos_summary-&gt;wos_addresses</title>
+<path fill="none" stroke="black" d="M54.44,-765.34C56.4,-859.52 69.27,-1288.44 142.24,-1395 150.87,-1407.61 163.45,-1417.57 176.73,-1425.32"/>
+<polygon fill="black" stroke="black" points="174.68,-1428.19 185.14,-1429.86 178.01,-1422.03 174.68,-1428.19"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_book_desc -->
+<g id="edge35" class="edge">
+<title>wos_summary-&gt;wos_book_desc</title>
+<path fill="none" stroke="black" d="M54.25,-765.32C55.23,-855.63 64.02,-1252.56 142.24,-1341 150.06,-1349.84 160.48,-1355.9 171.61,-1360.03"/>
+<polygon fill="black" stroke="black" points="170.4,-1363.32 180.99,-1362.97 172.49,-1356.64 170.4,-1363.32"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_book_notes -->
+<g id="edge36" class="edge">
+<title>wos_summary-&gt;wos_book_notes</title>
+<path fill="none" stroke="black" d="M54.54,-765.34C56.88,-850.6 70.86,-1207.47 142.24,-1287 149.52,-1295.11 159,-1300.88 169.19,-1304.96"/>
+<polygon fill="black" stroke="black" points="167.97,-1308.24 178.56,-1308.15 170.22,-1301.62 167.97,-1308.24"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_chapters -->
+<g id="edge37" class="edge">
+<title>wos_summary-&gt;wos_chapters</title>
+<path fill="none" stroke="black" d="M54.91,-765.36C58.71,-845.31 77.68,-1162.33 142.24,-1233 151.74,-1243.4 164.86,-1249.94 178.4,-1254.01"/>
+<polygon fill="black" stroke="black" points="177.26,-1257.33 187.81,-1256.4 178.98,-1250.55 177.26,-1257.33"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_conference -->
+<g id="edge38" class="edge">
+<title>wos_summary-&gt;wos_conference</title>
+<path fill="none" stroke="black" d="M55.36,-765.3C60.73,-839.52 84.45,-1117.11 142.24,-1179 149.98,-1187.29 160.03,-1193.12 170.71,-1197.2"/>
+<polygon fill="black" stroke="black" points="169.53,-1200.49 180.12,-1200.25 171.69,-1193.84 169.53,-1200.49"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_contributors -->
+<g id="edge39" class="edge">
+<title>wos_summary-&gt;wos_contributors</title>
+<path fill="none" stroke="black" d="M55.91,-765.07C62.98,-832.98 91.14,-1071.77 142.24,-1125 149.66,-1132.72 159.06,-1138.3 169.1,-1142.31"/>
+<polygon fill="black" stroke="black" points="167.7,-1145.53 178.29,-1145.47 169.97,-1138.91 167.7,-1145.53"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_doctypes -->
+<g id="edge40" class="edge">
+<title>wos_summary-&gt;wos_doctypes</title>
+<path fill="none" stroke="black" d="M56.71,-765.42C65.77,-827.32 97.92,-1026.49 142.24,-1071 151.74,-1080.54 164.3,-1086.79 177.23,-1090.87"/>
+<polygon fill="black" stroke="black" points="176.09,-1094.18 186.66,-1093.41 177.91,-1087.43 176.09,-1094.18"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_dynamic_citation_topics -->
+<g id="edge41" class="edge">
+<title>wos_summary-&gt;wos_dynamic_citation_topics</title>
+<path fill="none" stroke="black" d="M54.47,-765.49C56.43,-814.12 68.61,-946.67 142.24,-1017 142.99,-1017.72 143.76,-1018.42 144.55,-1019.1"/>
+<polygon fill="black" stroke="black" points="142.17,-1021.7 152.3,-1024.81 146.33,-1016.06 142.17,-1021.7"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_dynamic_identifiers -->
+<g id="edge42" class="edge">
+<title>wos_summary-&gt;wos_dynamic_identifiers</title>
+<path fill="none" stroke="black" d="M56.19,-765.45C61.87,-807.11 81.55,-909.05 142.24,-963 143.73,-964.33 145.28,-965.59 146.89,-966.79"/>
+<polygon fill="black" stroke="black" points="144.99,-969.73 155.29,-972.19 148.77,-963.84 144.99,-969.73"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_edition -->
+<g id="edge43" class="edge">
+<title>wos_summary-&gt;wos_edition</title>
+<path fill="none" stroke="black" d="M58.94,-765.41C68.74,-799.13 94.23,-870.87 142.24,-909 154.43,-918.68 169.87,-924.9 184.85,-928.89"/>
+<polygon fill="black" stroke="black" points="183.62,-932.19 194.15,-931.07 185.21,-925.38 183.62,-932.19"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_grants -->
+<g id="edge44" class="edge">
+<title>wos_summary-&gt;wos_grants</title>
+<path fill="none" stroke="black" d="M64.11,-765.23C78.3,-789.41 106.57,-831.73 142.24,-855 155.16,-863.43 170.68,-869.25 185.5,-873.26"/>
+<polygon fill="black" stroke="black" points="184.64,-876.65 195.18,-875.63 186.3,-869.85 184.64,-876.65"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_headings -->
+<g id="edge45" class="edge">
+<title>wos_summary-&gt;wos_headings</title>
+<path fill="none" stroke="black" d="M79.68,-765.32C96.73,-776.86 120.02,-791.35 142.24,-801 153.12,-805.73 165.05,-809.84 176.72,-813.33"/>
+<polygon fill="black" stroke="black" points="175.74,-816.69 186.32,-816.07 177.67,-809.96 175.74,-816.69"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_keywords -->
+<g id="edge46" class="edge">
+<title>wos_summary-&gt;wos_keywords</title>
+<path fill="none" stroke="black" d="M106.36,-754.59C127.85,-757.72 152.95,-761.36 175.55,-764.65"/>
+<polygon fill="black" stroke="black" points="174.86,-768.08 185.26,-766.06 175.87,-761.16 174.86,-768.08"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_keywords_plus -->
+<g id="edge47" class="edge">
+<title>wos_summary-&gt;wos_keywords_plus</title>
+<path fill="none" stroke="black" d="M106.36,-739.41C122.64,-737.04 140.99,-734.37 158.76,-731.79"/>
+<polygon fill="black" stroke="black" points="159.13,-735.28 168.52,-730.37 158.12,-728.35 159.13,-735.28"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_languages -->
+<g id="edge48" class="edge">
+<title>wos_summary-&gt;wos_languages</title>
+<path fill="none" stroke="black" d="M79.68,-728.68C96.73,-717.14 120.02,-702.65 142.24,-693 152,-688.76 162.6,-685.02 173.1,-681.77"/>
+<polygon fill="black" stroke="black" points="173.91,-685.18 182.51,-679 171.93,-678.47 173.91,-685.18"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_normalized_doctypes -->
+<g id="edge49" class="edge">
+<title>wos_summary-&gt;wos_normalized_doctypes</title>
+<path fill="none" stroke="black" d="M64.11,-728.77C78.3,-704.59 106.57,-662.27 142.24,-639 144.12,-637.77 146.05,-636.6 148.03,-635.49"/>
+<polygon fill="black" stroke="black" points="149.55,-638.64 156.9,-631.01 146.4,-632.39 149.55,-638.64"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_normalized_languages -->
+<g id="edge50" class="edge">
+<title>wos_summary-&gt;wos_normalized_languages</title>
+<path fill="none" stroke="black" d="M58.94,-728.59C68.74,-694.87 94.23,-623.13 142.24,-585 143.4,-584.08 144.6,-583.19 145.81,-582.32"/>
+<polygon fill="black" stroke="black" points="147.64,-585.31 154.32,-577.09 143.97,-579.35 147.64,-585.31"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_page -->
+<g id="edge51" class="edge">
+<title>wos_summary-&gt;wos_page</title>
+<path fill="none" stroke="black" d="M56.19,-728.55C61.87,-686.89 81.55,-584.95 142.24,-531 155.4,-519.31 173.19,-512.63 189.99,-508.83"/>
+<polygon fill="black" stroke="black" points="190.19,-512.36 199.34,-507.02 188.85,-505.49 190.19,-512.36"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_publisher -->
+<g id="edge52" class="edge">
+<title>wos_summary-&gt;wos_publisher</title>
+<path fill="none" stroke="black" d="M54.47,-728.51C56.43,-679.88 68.61,-547.33 142.24,-477 151.83,-467.84 164.24,-461.73 176.98,-457.68"/>
+<polygon fill="black" stroke="black" points="177.53,-461.15 186.24,-455.13 175.67,-454.4 177.53,-461.15"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_references -->
+<g id="edge53" class="edge">
+<title>wos_summary-&gt;wos_references</title>
+<path fill="none" stroke="black" d="M56.71,-728.58C65.77,-666.68 97.92,-467.51 142.24,-423 150.52,-414.69 161.11,-408.87 172.25,-404.82"/>
+<polygon fill="black" stroke="black" points="173.09,-408.22 181.59,-401.9 171.01,-401.54 173.09,-408.22"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_reprint_addresses -->
+<g id="edge54" class="edge">
+<title>wos_summary-&gt;wos_reprint_addresses</title>
+<path fill="none" stroke="black" d="M55.91,-728.93C62.98,-661.02 91.14,-422.23 142.24,-369 144.86,-366.27 147.73,-363.81 150.79,-361.59"/>
+<polygon fill="black" stroke="black" points="152.49,-364.65 159.17,-356.43 148.82,-358.69 152.49,-364.65"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_reviewed_authors -->
+<g id="edge55" class="edge">
+<title>wos_summary-&gt;wos_reviewed_authors</title>
+<path fill="none" stroke="black" d="M55.36,-728.7C60.73,-654.48 84.45,-376.89 142.24,-315 145.03,-312.02 148.11,-309.35 151.41,-306.97"/>
+<polygon fill="black" stroke="black" points="153.22,-309.97 159.95,-301.79 149.59,-303.99 153.22,-309.97"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_reviewed_languages -->
+<g id="edge56" class="edge">
+<title>wos_summary-&gt;wos_reviewed_languages</title>
+<path fill="none" stroke="black" d="M54.91,-728.64C58.71,-648.69 77.68,-331.67 142.24,-261 142.61,-260.59 142.99,-260.19 143.37,-259.8"/>
+<polygon fill="black" stroke="black" points="145.62,-262.48 150.95,-253.33 141.07,-257.16 145.62,-262.48"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_subheadings -->
+<g id="edge57" class="edge">
+<title>wos_summary-&gt;wos_subheadings</title>
+<path fill="none" stroke="black" d="M54.54,-728.66C56.88,-643.4 70.86,-286.53 142.24,-207 148.7,-199.8 156.89,-194.45 165.77,-190.48"/>
+<polygon fill="black" stroke="black" points="166.92,-193.79 175.03,-186.97 164.44,-187.24 166.92,-193.79"/>
+</g>
+<!-- wos_summary&#45;&gt;wos_subjects -->
+<g id="edge58" class="edge">
+<title>wos_summary-&gt;wos_subjects</title>
+<path fill="none" stroke="black" d="M54.25,-728.68C55.23,-638.37 64.02,-241.44 142.24,-153 151.95,-142.03 165.67,-135.34 179.77,-131.3"/>
+<polygon fill="black" stroke="black" points="180.19,-134.8 189.1,-129.06 178.56,-128 180.19,-134.8"/>
+</g>
+<!-- wos_summary_names -->
+<g id="node60" class="node">
+<title>wos_summary_names</title>
+<polygon fill="lightblue" stroke="black" points="318.92,-90 162.88,-90 162.88,-54 318.92,-54 318.92,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-67.8" font-family="Arial" font-size="14.00">wos_summary_names</text>
+</g>
+<!-- wos_summary&#45;&gt;wos_summary_names -->
+<g id="edge59" class="edge">
+<title>wos_summary-&gt;wos_summary_names</title>
+<path fill="none" stroke="black" d="M54,-728.63C53.72,-633.36 57.17,-196.36 142.24,-99 145.43,-95.35 149.07,-92.17 153.01,-89.41"/>
+<polygon fill="black" stroke="black" points="154.59,-92.54 161.43,-84.45 151.03,-86.51 154.59,-92.54"/>
+</g>
+<!-- wos_titles -->
+<g id="node62" class="node">
+<title>wos_titles</title>
+<polygon fill="lightblue" stroke="black" points="279.63,-36 202.17,-36 202.17,0 279.63,0 279.63,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="240.9" y="-13.8" font-family="Arial" font-size="14.00">wos_titles</text>
+</g>
+<!-- wos_summary&#45;&gt;wos_titles -->
+<g id="edge60" class="edge">
+<title>wos_summary-&gt;wos_titles</title>
+<path fill="none" stroke="black" d="M53.78,-728.77C52.32,-629.17 50.25,-151.39 142.24,-45 154.38,-30.96 173.1,-23.91 190.91,-20.47"/>
+<polygon fill="black" stroke="black" points="191.28,-23.95 200.62,-18.96 190.2,-17.04 191.28,-23.95"/>
+</g>
+<!-- wos_summary_names_email_addr -->
+<g id="node61" class="node">
+<title>wos_summary_names_email_addr</title>
+<polygon fill="lightblue" stroke="black" points="621.9,-36 388.81,-36 388.81,0 621.9,0 621.9,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="505.35" y="-13.8" font-family="Arial" font-size="14.00">wos_summary_names_email_addr</text>
+</g>
+<!-- wos_summary_names&#45;&gt;wos_summary_names_email_addr -->
+<g id="edge61" class="edge">
+<title>wos_summary_names-&gt;wos_summary_names_email_addr</title>
+<path fill="none" stroke="black" d="M319.22,-56.09C345.66,-50.65 375.62,-44.49 403.62,-38.73"/>
+<polygon fill="black" stroke="black" points="404.08,-42.2 413.17,-36.76 402.67,-35.35 404.08,-42.2"/>
+</g>
+</g>
+</svg>

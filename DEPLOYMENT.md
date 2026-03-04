@@ -41,7 +41,7 @@ export ENVIRONMENT="dev"  # or staging, prod
 
 ```bash
 # From project root
-python src/wos_beam_pipeline/utils/schema_generator.py \
+python -m wos_beam_pipeline.utils.schema_generator \
   parser/wos_schema_final.sql \
   config/schemas
 
@@ -166,13 +166,14 @@ INPUT_BUCKET=$(terraform output -raw input_bucket_name)
 cd ..
 
 # Run pipeline locally
-python src/wos_beam_pipeline/main.py \
+python -m wos_beam_pipeline.main \
   --input_pattern="gs://${INPUT_BUCKET}/data/*.xml" \
   --config_path="${CONFIG_PATH}" \
   --schema_path="${SCHEMA_PATH}" \
   --bq_dataset="${BQ_DATASET}" \
   --dlq_bucket="${DLQ_BUCKET}" \
-  --runner=DirectRunner
+  --runner=DirectRunner \
+  --setup_file="$(pwd)/setup.py"
 ```
 
 **Expected output:**
@@ -199,7 +200,7 @@ gsutil ls gs://${DLQ_BUCKET}/failed_records/
 SA_EMAIL=$(cd terraform && terraform output -raw dataflow_service_account_email && cd ..)
 TEMP_BUCKET=$(cd terraform && terraform output -raw temp_bucket_name && cd ..)
 
-python src/wos_beam_pipeline/main.py \
+python -m wos_beam_pipeline.main \
   --input_pattern="gs://${INPUT_BUCKET}/data/*.xml" \
   --config_path="${CONFIG_PATH}" \
   --schema_path="${SCHEMA_PATH}" \

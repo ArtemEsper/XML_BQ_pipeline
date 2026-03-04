@@ -126,7 +126,7 @@ pip install -r requirements.txt && pip install -e .
 The BQ schemas are derived from the PostgreSQL source schema:
 
 ```bash
-python src/wos_beam_pipeline/utils/schema_generator.py \
+python -m wos_beam_pipeline.utils.schema_generator \
   parser/wos_schema_final.sql \
   config/schemas
 ```
